@@ -30,5 +30,4 @@ SOURCES += \
 HEADERS += \
         colorwheel.h
 
-FORMS += \
-        colorwheel.ui
+FORMS +=

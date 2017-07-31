@@ -1,14 +1,10 @@
 #include "colorwheel.h"
-#include "ui_colorwheel.h"
 
 ColorWheel::ColorWheel(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ColorWheel)
+    QWidget(parent)
 {
-    ui->setupUi(this);
-
+    connect(this, SIGNAL(colorChanged(QColor)), this, SLOT(setColor(QColor)));
     this->setMinimumSize(150,150);
-
 
     // Setup gradient position and color
     mGradient.setAngle(0);
@@ -21,40 +17,60 @@ ColorWheel::ColorWheel(QWidget *parent) :
     mGradient.setColorAt(300.0/360.0, Qt::magenta);
     mGradient.setColorAt(1, Qt::red);
 
-    setHue(0);
-    setColor(Qt::red);
+//    setHue(0);
+//    setHue();
+    setColor(Qt::blue);
+}
 
+ColorWheel::ColorWheel(const QColor &inColor, QWidget *parent) :
+    QWidget(parent)
+{
     connect(this, SIGNAL(colorChanged(QColor)), this, SLOT(setColor(QColor)));
+    this->setMinimumSize(150,150);
+
+    // Setup gradient position and color
+    mGradient.setAngle(0);
+    mGradient.setCenter(QPointF(0,0));
+    mGradient.setColorAt(0, Qt::red);
+    mGradient.setColorAt(60.0/360.0, Qt::yellow);
+    mGradient.setColorAt(120.0/360.0, Qt::green);
+    mGradient.setColorAt(180.0/360.0, Qt::cyan);
+    mGradient.setColorAt(240.0/360.0, Qt::blue);
+    mGradient.setColorAt(300.0/360.0, Qt::magenta);
+    mGradient.setColorAt(1, Qt::red);
+
+    setColor(inColor);
+
 }
 
 ColorWheel::~ColorWheel()
 {
-    delete ui;
+
 }
 
-QColor ColorWheel::getOutColor() const
+QColor ColorWheel::getColor() const
 {
-    return mColor;
+    return this->mColor;
 }
 
-void ColorWheel::setColor(const QColor &value)
+void ColorWheel::setColor(const QColor &inValue)
 {
-    mColor = value;
+    this->mColor = inValue;
 }
 
 double ColorWheel::getHue() const
 {
-    return mHue;
+    return this->mHue;
 }
 
-void ColorWheel::setHue(double value)
+void ColorWheel::setHue(double inValue)
 {
-    mHue = value;
+    this->mHue = inValue;
 }
 
 void ColorWheel::changeColor()
 {
-    QColor c(getOutColor());
+    QColor c(getColor());
     c.setHsvF( -(getHue()/360), 1.0, 1.0, 1.0);
     emit colorChanged(c);
 }
@@ -83,11 +99,11 @@ double ColorWheel::getAngle(QVector2D v1, QVector2D v2)
 
 void ColorWheel::mouseCalc()
 {
-    QPoint m = this->mapFromGlobal(QCursor::pos());
+    QPoint mousePosition = this->mapFromGlobal(QCursor::pos());
 
-    if(m.x() < this->width()/2)
+    if(mousePosition.x() < this->width()/2)
     {
-        if(m.y() < this->height()/2)
+        if(mousePosition.y() < this->height()/2)
         {
             mouseQuadTest = LEFT_UP;
         }
@@ -98,7 +114,7 @@ void ColorWheel::mouseCalc()
     }
     else
     {
-        if(m.y() < this->height()/2)
+        if(mousePosition.y() < this->height()/2)
         {
             mouseQuadTest = RIGHT_UP;
         }
@@ -113,13 +129,6 @@ void ColorWheel::mouseCalc()
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-
-    // Arrow
-//    static const QPoint arrow[3] = {
-//        QPoint(0, 8),
-//        QPoint(8, 0),
-//        QPoint(0, -8)
-//    };
 
     QPainter painter(this);
     QPainterPath path;
@@ -167,7 +176,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 
     // Sample color
     painter.save();
-    painter.setBrush(getOutColor());
+    painter.setBrush(getColor());
     double diagonal = cos(qDegreesToRadians(45.0)) * mInnerRadius;
     double gap = (diagonal * 0.01);
     painter.drawRect(QRect(QPoint( -diagonal + gap, -diagonal + gap ), QPoint( diagonal - gap, diagonal - gap) ) );
@@ -181,7 +190,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 
     mouseCalc();
 
-    hit = isHit();
+    mWheelHit = isHit();
 
     if(isHit())
     {
@@ -198,7 +207,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     mMouseVec.setY(-(event->y() - this->height() / 2));
     mouseCalc();
 
-    if(hit)
+    if(mWheelHit)
     {
         setHue( - (getAngle(mMouseVec.normalized(), QVector2D(1,0).normalized())) );
         changeColor();

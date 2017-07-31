@@ -7,17 +7,12 @@
 #include <QPainterPath>
 #include <QGradient>
 #include <QMouseEvent>
-//#include <math.h>
 #include <QtMath>
 #include <QVector2D>
 
 #include <QDebug>
 
-namespace Ui {
-class ColorWheel;
-}
-
-
+#include <cmath>
 
 class ColorWheel : public QWidget
 {
@@ -25,18 +20,18 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
+    explicit ColorWheel(const QColor &inColor, QWidget *parent = 0);
     ~ColorWheel();
 
-
 public slots:
-    QColor getOutColor() const;
-    void setColor(const QColor &value);
+    QColor getColor() const;
+    void setColor(const QColor &inValue);
 
 signals:
-    void colorChanged(QColor value);
+    void colorChanged(QColor inValue);
 
 private:
-    Ui::ColorWheel *ui;
+    QColor mColor;
 
     enum {
         LEFT_UP = 0,
@@ -46,7 +41,7 @@ private:
     };
 
     QConicalGradient mGradient;
-    QColor mColor;
+
     QVector2D mMouseVec;
     QPoint arrow[3];
 
@@ -54,7 +49,7 @@ private:
     double mOuterRadius;
     double mHue;
     int mouseQuadTest;
-    bool hit;
+    bool mWheelHit;
 
     bool isHit();
     double getAngle(QVector2D v1, QVector2D v2);
