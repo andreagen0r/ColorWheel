@@ -3,16 +3,15 @@
 
 #include <QWidget>
 #include <QColor>
+#include <QGradient>
 #include <QPainter>
 #include <QPainterPath>
-#include <QGradient>
 #include <QMouseEvent>
-//#include <QtMath>
 #include <QVector2D>
-
+#include <cmath>
 #include <QDebug>
 
-#include <cmath>
+#include <QPixmap>
 
 class ColorWheel : public QWidget
 {
@@ -33,8 +32,6 @@ signals:
 private:
     QColor mColor;
 
-    void initialize();
-
     enum {
         LEFT_UP = 0,
         RIGHT_UP = 1,
@@ -43,25 +40,17 @@ private:
     };
 
     QConicalGradient mGradient;
-
-    QVector2D mMouseVec;
     QPoint arrow[3];
-
     float mInnerRadius;
     float mOuterRadius;
-    float mHue;
+    QVector2D mMouseVec;
     short mouseQuadTest;
     bool mWheelHit;
 
-    bool isHit();
+    void initialize();
+    bool isWheelHit();
     float getAngle(QVector2D v1, QVector2D v2);
-    void mouseCalc();
-
-    float getHue() const;
-    void setHue(const float &inValue);
-    void changeColor();
-
-
+    void getQuadrant();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
