@@ -3,30 +3,27 @@
 ColorWheel::ColorWheel(QWidget *parent) :
     QWidget(parent)
 {
-    connect(this, SIGNAL(colorChanged(QColor)), this, SLOT(setColor(QColor)));
-    this->setMinimumSize(150,150);
-
-    // Setup gradient position and color
-    mGradient.setAngle(0);
-    mGradient.setCenter(QPointF(0,0));
-    mGradient.setColorAt(0, Qt::red);
-    mGradient.setColorAt(60.0/360.0, Qt::yellow);
-    mGradient.setColorAt(120.0/360.0, Qt::green);
-    mGradient.setColorAt(180.0/360.0, Qt::cyan);
-    mGradient.setColorAt(240.0/360.0, Qt::blue);
-    mGradient.setColorAt(300.0/360.0, Qt::magenta);
-    mGradient.setColorAt(1, Qt::red);
-
-//    setHue(0);
-//    setHue();
-    setColor(Qt::blue);
+    initialize();
+    setColor(Qt::red);
 }
 
 ColorWheel::ColorWheel(const QColor &inColor, QWidget *parent) :
     QWidget(parent)
 {
+    initialize();
+    setColor(inColor);
+}
+
+ColorWheel::~ColorWheel()
+{
+
+}
+
+void ColorWheel::initialize()
+{
     connect(this, SIGNAL(colorChanged(QColor)), this, SLOT(setColor(QColor)));
     this->setMinimumSize(150,150);
+    this->setMaximumSize(600,600);
 
     // Setup gradient position and color
     mGradient.setAngle(0);
@@ -38,14 +35,6 @@ ColorWheel::ColorWheel(const QColor &inColor, QWidget *parent) :
     mGradient.setColorAt(240.0/360.0, Qt::blue);
     mGradient.setColorAt(300.0/360.0, Qt::magenta);
     mGradient.setColorAt(1, Qt::red);
-
-    setColor(inColor);
-
-}
-
-ColorWheel::~ColorWheel()
-{
-
 }
 
 QColor ColorWheel::getColor() const
@@ -58,12 +47,12 @@ void ColorWheel::setColor(const QColor &inValue)
     this->mColor = inValue;
 }
 
-double ColorWheel::getHue() const
+float ColorWheel::getHue() const
 {
     return this->mHue;
 }
 
-void ColorWheel::setHue(double inValue)
+void ColorWheel::setHue(const float &inValue)
 {
     this->mHue = inValue;
 }
@@ -74,6 +63,8 @@ void ColorWheel::changeColor()
     c.setHsvF( -(getHue()/360), 1.0, 1.0, 1.0);
     emit colorChanged(c);
 }
+
+
 
 bool ColorWheel::isHit()
 {
@@ -87,14 +78,14 @@ bool ColorWheel::isHit()
     }
 }
 
-double ColorWheel::getAngle(QVector2D v1, QVector2D v2)
+float ColorWheel::getAngle(QVector2D v1, QVector2D v2)
 {
-    double a = qRadiansToDegrees( acos( v1.dotProduct(v1,v2) / (v1.length() * v2.length() ) ) );
+    double angle = std::acos( v1.dotProduct(v1,v2) / (v1.length() * v2.length() ) ) * (180 / M_PI);
 
     if(mouseQuadTest == LEFT_DOWN || mouseQuadTest == RIGHT_DOWN)
-        a = 360 - a;
+        angle = 360 - angle;
 
-    return a;
+    return angle;
 }
 
 void ColorWheel::mouseCalc()
@@ -155,6 +146,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 
     // Rotate Indicator
     painter.rotate(getHue());
+    qDebug() << getHue();
+    qDebug() << mColor.hueF() * 360;
 
     // Draw color indicator line
     painter.drawLine(QPointF(mInnerRadius,0), QPointF(mOuterRadius, 0));
@@ -177,7 +170,18 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     // Sample color
     painter.save();
     painter.setBrush(getColor());
-    double diagonal = cos(qDegreesToRadians(45.0)) * mInnerRadius;
+
+    // versao antiga usando QtMath
+    // double diagonal = cos(qDegreesToRadians(45.0)) * mInnerRadius;
+
+    // Versão nova usando STL cmath
+    float diagonal = std::cos(45.0 * (M_PI / 180)) * mInnerRadius;
+    //    // Converts degrees to radians.
+    //    #define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
+
+    //    // Converts radians to degrees.
+    //    #define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
+
     double gap = (diagonal * 0.01);
     painter.drawRect(QRect(QPoint( -diagonal + gap, -diagonal + gap ), QPoint( diagonal - gap, diagonal - gap) ) );
     painter.restore();
@@ -220,7 +224,8 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 
-    int side = qMin(this->width(), this->height()) / 2;
+//    int side = qMin(this->width(), this->height()) / 2;
+    int side = std::min(this->width(), this->height()) / 2;
     mOuterRadius = side - 1;
     mInnerRadius = side - (side * 0.25);
 

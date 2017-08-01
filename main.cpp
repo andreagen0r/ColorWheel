@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
 //    w.setColor(Qt::green);
 //    w.show();
     ColorWheel *w = new ColorWheel(Qt::blue);
+//    ColorWheel *w = new ColorWheel();
+    w->setWindowTitle("Color Wheel");
     w->show();
 
     return a.exec();

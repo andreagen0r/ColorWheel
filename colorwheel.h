@@ -7,7 +7,7 @@
 #include <QPainterPath>
 #include <QGradient>
 #include <QMouseEvent>
-#include <QtMath>
+//#include <QtMath>
 #include <QVector2D>
 
 #include <QDebug>
@@ -33,6 +33,8 @@ signals:
 private:
     QColor mColor;
 
+    void initialize();
+
     enum {
         LEFT_UP = 0,
         RIGHT_UP = 1,
@@ -45,19 +47,21 @@ private:
     QVector2D mMouseVec;
     QPoint arrow[3];
 
-    double mInnerRadius;
-    double mOuterRadius;
-    double mHue;
-    int mouseQuadTest;
+    float mInnerRadius;
+    float mOuterRadius;
+    float mHue;
+    short mouseQuadTest;
     bool mWheelHit;
 
     bool isHit();
-    double getAngle(QVector2D v1, QVector2D v2);
+    float getAngle(QVector2D v1, QVector2D v2);
     void mouseCalc();
 
-    double getHue() const;
-    void setHue(double value);
+    float getHue() const;
+    void setHue(const float &inValue);
     void changeColor();
+
+
 
 protected:
     void paintEvent(QPaintEvent *event) override;
