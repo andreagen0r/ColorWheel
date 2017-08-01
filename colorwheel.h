@@ -11,8 +11,6 @@
 #include <cmath>
 #include <QDebug>
 
-#include <QPixmap>
-
 class ColorWheel : public QWidget
 {
     Q_OBJECT

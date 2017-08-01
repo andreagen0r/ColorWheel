@@ -93,8 +93,6 @@ void ColorWheel::getQuadrant()
             mouseQuadTest = RIGHT_DOWN;
         }
     }
-
-//    qDebug() << std::atan2(static_cast<float>(mousePosition.y()), static_cast<float>(mousePosition.x()));
 }
 
 
