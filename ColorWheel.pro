@@ -25,9 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        colorwheel.cpp
+        colorwheel.cpp \
+    pmath.cpp
 
 HEADERS += \
-        colorwheel.h
+        colorwheel.h \
+    pmath.h
 
 FORMS +=

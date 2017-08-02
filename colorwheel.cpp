@@ -44,7 +44,6 @@ void ColorWheel::setColor(const QColor &inValue)
     emit colorChanged(this->mColor);
 }
 
-
 bool ColorWheel::isWheelHit()
 {
     if (mMouseVec.length() > mInnerRadius && mMouseVec.length() < mOuterRadius)
@@ -59,7 +58,7 @@ bool ColorWheel::isWheelHit()
 
 float ColorWheel::getAngle(QVector2D v1, QVector2D v2)
 {
-    double angle = std::acos( v1.dotProduct(v1,v2) / (v1.length() * v2.length() ) ) * (180 / M_PI);
+    float angle = physis::math::radiansToDegrees(std::acos( v1.dotProduct(v1,v2) / (v1.length() * v2.length() ) ));
 
     if(mouseQuadTest == LEFT_DOWN || mouseQuadTest == RIGHT_DOWN)
         angle = 360 - angle;
@@ -95,7 +94,6 @@ void ColorWheel::getQuadrant()
     }
 }
 
-
 void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
@@ -110,10 +108,9 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     // Draw wheel
     painter.setPen(Qt::NoPen);
     painter.setBrush(mGradient);
-    path.addEllipse(QPointF(0,0), mOuterRadius, mOuterRadius);
     path.addEllipse(QPointF(0,0), mInnerRadius, mInnerRadius);
+    path.addEllipse(QPointF(0,0), mOuterRadius, mOuterRadius);
     painter.drawPath(path);
-
 
     // Draw color indicator
     painter.save();
@@ -121,11 +118,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.setPen(QPen(Qt::black,1, Qt::SolidLine));
 
     // Rotate Indicator
-//    painter.rotate(getHue());
-//    painter.rotate(- mColor.hueF() * 360);
     painter.rotate(- getColor().hueF() * 360);
-//    qDebug() << getHue();
-//    qDebug() << mColor.hueF() * 360;
 
     // Draw color indicator line
     painter.drawLine(QPointF(mInnerRadius,0), QPointF(mOuterRadius, 0));
@@ -138,29 +131,13 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.setClipping(false);
     painter.restore();
 
-    // Draw debug vector line from mouse position
-//    painter.save();
-//    painter.setPen(QPen(Qt::white,2, Qt::DotLine));
-//    QPointF m = this->mapFromGlobal(QCursor::pos());
-//    painter.drawLine(QPointF(0,0),QPointF(m.x() - this->width()/2, m.y() - this->height()/2));
-//    painter.restore();
-
     // Sample color
     painter.save();
     painter.setBrush(getColor());
 
-    // versao antiga usando QtMath
-    // double diagonal = cos(qDegreesToRadians(45.0)) * mInnerRadius;
+    float diagonal = std::cos(physis::math::degreeToRadians(45.0)) * mInnerRadius;
 
-    // Versão nova usando STL cmath
-    float diagonal = std::cos(45.0 * (M_PI / 180)) * mInnerRadius;
-    //    // Converts degrees to radians.
-    //    #define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
-
-    //    // Converts radians to degrees.
-    //    #define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
-
-    double gap = (diagonal * 0.04);
+    float gap = (diagonal * 0.04);
     painter.drawRect(QRect(QPoint( -diagonal + gap, -diagonal + gap ), QPoint( diagonal - gap, diagonal - gap) ) );
     painter.restore();
 }
@@ -177,8 +154,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 
     if(isWheelHit())
     {
-//        setHue( - (getAngle(mMouseVec.normalized(), QVector2D(1,0).normalized())) );
-
+        //setHue( - (getAngle(mMouseVec.normalized(), QVector2D(1,0).normalized())) );
         QColor c;
         c.setHsvF( (getAngle(mMouseVec.normalized(), QVector2D(1,0).normalized())) / 360, getColor().saturationF(),
                   getColor().valueF(), getColor().alphaF());

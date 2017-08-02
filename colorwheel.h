@@ -8,8 +8,9 @@
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <QVector2D>
-#include <cmath>
 #include <QDebug>
+
+#include "pmath.h"
 
 class ColorWheel : public QWidget
 {
@@ -28,9 +29,14 @@ signals:
     void colorChanged(QColor inValue);
 
 private:
+    void initialize();
+    bool isWheelHit();
+    void getQuadrant();
+    float getAngle(QVector2D v1, QVector2D v2);
+
     QColor mColor;
 
-    enum {
+    enum Quadrant {
         LEFT_UP = 0,
         RIGHT_UP = 1,
         LEFT_DOWN = 2,
@@ -45,10 +51,6 @@ private:
     short mouseQuadTest;
     bool mWheelHit;
 
-    void initialize();
-    bool isWheelHit();
-    float getAngle(QVector2D v1, QVector2D v2);
-    void getQuadrant();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
