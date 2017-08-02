@@ -31,6 +31,9 @@ void ColorWheel::initialize()
     mGradient.setColorAt(240.0/360.0, Qt::blue);
     mGradient.setColorAt(300.0/360.0, Qt::magenta);
     mGradient.setColorAt(1.0, Qt::red);
+
+    valueGradient.setColorAt(0.0, QColor(0,0,0,0));
+    valueGradient.setColorAt(1.0, Qt::black);
 }
 
 QColor ColorWheel::getColor() const
@@ -47,6 +50,19 @@ void ColorWheel::setColor(const QColor &inValue)
 bool ColorWheel::isWheelHit()
 {
     if (mMouseVec.length() > mInnerRadius && mMouseVec.length() < mOuterRadius)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ColorWheel::isQuadHit()
+{
+    if(colorSampler.left() <= mMouseVec.x() && colorSampler.right() >= mMouseVec.x()
+            && colorSampler.top() <= mMouseVec.y() && colorSampler.bottom() >= mMouseVec.y())
     {
         return true;
     }
@@ -99,7 +115,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 
     QPainter painter(this);
-    QPainterPath path;
+    QPainterPath path, border;
     painter.setRenderHints(QPainter::Antialiasing);
 
     // Move the world to the center of the screen
@@ -131,15 +147,26 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.setClipping(false);
     painter.restore();
 
-    // Sample color
+    // Sampler color
     painter.save();
-    painter.setBrush(getColor());
 
-    float diagonal = std::cos(physis::math::degreeToRadians(45.0)) * mInnerRadius;
+    QColor saturatedColor;
+    saturatedColor.setHsvF(getColor().hueF(), 0, 1.0, 1.0);
 
-    float gap = (diagonal * 0.04);
-    painter.drawRect(QRect(QPoint( -diagonal + gap, -diagonal + gap ), QPoint( diagonal - gap, diagonal - gap) ) );
+    saturationGradient.setColorAt(1.0, getColor());
+    saturationGradient.setColorAt(0.0, saturatedColor);
+
+    painter.setBrush(saturationGradient);
+    painter.drawRect(colorSampler);
+    painter.setBrush(valueGradient);
+    painter.drawRect(colorSampler );
     painter.restore();
+
+
+    // Sampler Color indicator
+    painter.setBrush(Qt::black);
+    painter.drawEllipse(QPoint(mMouseVec.x(), - mMouseVec.y()), 10,10);
+
 }
 
 void ColorWheel::mousePressEvent(QMouseEvent *event)
@@ -147,10 +174,10 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     mMouseVec.setX(event->x() - this->width() / 2);
     mMouseVec.setY(-(event->y() - this->height() / 2));
 
-
     getQuadrant();
 
     mWheelHit = isWheelHit();
+    mQuadHit = isQuadHit();
 
     if(isWheelHit())
     {
@@ -178,6 +205,12 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
         setColor(c);
     }
 
+    if(mQuadHit)
+    {
+        // fazer a logica do sampler color
+    }
+
+
     repaint();
 }
 
@@ -193,4 +226,17 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    arrow [0] = QPoint(0, 3 * (side * 0.01));
    arrow [1] = QPoint(6 * (side * 0.01), 0);
    arrow [2] = QPoint(0, -3 * (side * 0.01));
+
+   float diagonal = std::cos(physis::math::degreeToRadians(45.0)) * mInnerRadius;
+   float gap = (diagonal * 0.05);
+
+   colorSampler.setTopLeft(QPoint( -diagonal + gap, -diagonal + gap ));
+   colorSampler.setBottomRight(QPoint( diagonal - gap, diagonal - gap));
+
+   saturationGradient.setStart(QPointF(-diagonal + gap, 0 ));
+   saturationGradient.setFinalStop(QPointF(diagonal - gap, 0));
+
+   valueGradient.setStart(QPointF(0, -diagonal + gap ));
+   valueGradient.setFinalStop(QPointF(0, diagonal - gap));
+
 }

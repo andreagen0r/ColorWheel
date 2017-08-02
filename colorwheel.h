@@ -31,6 +31,7 @@ signals:
 private:
     void initialize();
     bool isWheelHit();
+    bool isQuadHit();
     void getQuadrant();
     float getAngle(QVector2D v1, QVector2D v2);
 
@@ -44,12 +45,16 @@ private:
     };
 
     QConicalGradient mGradient;
+    QLinearGradient saturationGradient;
+    QLinearGradient valueGradient;
     QPoint arrow[3];
     float mInnerRadius;
     float mOuterRadius;
     QVector2D mMouseVec;
     short mouseQuadTest;
     bool mWheelHit;
+    bool mQuadHit;
+    QRect colorSampler;
 
 
 protected:
