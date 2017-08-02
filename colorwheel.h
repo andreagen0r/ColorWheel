@@ -32,8 +32,14 @@ private:
     void initialize();
     bool isWheelHit();
     bool isQuadHit();
-    void getQuadrant();
+    short getQuadrant();
     float getAngle(QVector2D v1, QVector2D v2);
+
+    void drawColorWheel();
+    void drawColorSampler();
+    void drawIndicators();
+    void indicatorUpdate();
+
 
     QColor mColor;
 
@@ -51,11 +57,13 @@ private:
     float mInnerRadius;
     float mOuterRadius;
     QVector2D mMouseVec;
-    short mouseQuadTest;
+    QPointF mWorldCenter;
+
     bool mWheelHit;
     bool mQuadHit;
-    QRect colorSampler;
+    QRectF mColorSampler;
 
+    QPointF mIndicatorPosition;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
