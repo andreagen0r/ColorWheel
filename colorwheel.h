@@ -23,7 +23,7 @@ public:
 
 public slots:
     QColor getColor() const;
-    void setColor(const QColor &inValue);
+    void setColor(const QColor &inColor);
 
 signals:
     void colorChanged(QColor inValue);
@@ -33,12 +33,14 @@ private:
     bool isWheelHit();
     bool isQuadHit();
     short getQuadrant();
-    float getAngle(QVector2D v1, QVector2D v2);
+    float calcAngle(QVector2D v1, QVector2D v2);
 
-    void drawColorWheel();
-    void drawColorSampler();
+    void drawWheel();
+    void drawSaturationValue();
     void drawIndicators();
     void indicatorUpdate();
+    void setHue();
+    void setSaturationValue();
 
 
     QColor mColor;
