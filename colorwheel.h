@@ -24,6 +24,11 @@ public:
 public slots:
     QColor getColor() const;
     void setColor(const QColor &inColor);
+    void setColor(const float &inHue, const float &inSaturation, const float &inValue, const float &inAlpha);
+    void setHue(const float &inHue);
+    void setSaturation(const float &inSaturation);
+    void setValue(const float &inValue);
+    void setAlpha(const float &inAlpha);
 
 signals:
     void colorChanged(QColor inValue);
@@ -35,13 +40,13 @@ private:
     short getQuadrant();
     float calcAngle(QVector2D v1, QVector2D v2);
 
-    void drawWheel();
-    void drawSaturationValue();
-    void drawIndicators();
+    void chooserUpdate();
     void indicatorUpdate();
-    void setHue();
-    void setSaturationValue();
+    void hue();
 
+    void drawWheel(QPainter *inPainter);
+    void drawChooser(QPainter *inPainter);
+    void drawIndicators(QPainter *inPainter);
 
     QColor mColor;
 
@@ -63,9 +68,11 @@ private:
 
     bool mWheelHit;
     bool mQuadHit;
-    QRectF mColorSampler;
+    QRectF mChooserSize;
 
-    QPointF mIndicatorPosition;
+    QPoint mIndicatorPosition;
+    int indicatorSize;
+    int indicatorBorder;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
