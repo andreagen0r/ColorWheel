@@ -8,7 +8,6 @@
 #include <QPainterPath>
 #include <QMouseEvent>
 #include <QVector2D>
-#include <QDebug>
 
 #include "pmath.h"
 
@@ -37,26 +36,25 @@ private:
     void initialize();
     bool isWheelHit();
     bool isQuadHit();
-    short getQuadrant();
+    unsigned char getQuadrant();
     float calcAngle(QVector2D v1, QVector2D v2);
 
+    void wheelUpdate();
     void chooserUpdate();
     void indicatorUpdate();
-    void hue();
 
     void drawWheel(QPainter *inPainter);
     void drawChooser(QPainter *inPainter);
     void drawIndicators(QPainter *inPainter);
 
-    QColor mColor;
-
-    enum Quadrant {
+    enum Quadrant : unsigned char {
         LEFT_UP = 0,
         RIGHT_UP = 1,
         LEFT_DOWN = 2,
         RIGHT_DOWN = 3
     };
 
+    QColor mColor;
     QConicalGradient mGradient;
     QLinearGradient saturationGradient;
     QLinearGradient valueGradient;
@@ -77,6 +75,7 @@ private:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 };
