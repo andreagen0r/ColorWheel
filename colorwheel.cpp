@@ -28,6 +28,7 @@ void ColorWheel::setColor(const QColor &inColor)
 {
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::setColor(const float &inHue, const float &inSaturation, const float &inValue, const float &inAlpha)
@@ -36,6 +37,7 @@ void ColorWheel::setColor(const float &inHue, const float &inSaturation, const f
     inColor.setHsvF(inHue, inSaturation, inValue, inAlpha);
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::setHue(const float &inHue)
@@ -44,6 +46,7 @@ void ColorWheel::setHue(const float &inHue)
     inColor.setHsvF(inHue, mColor.saturationF(), mColor.valueF(), mColor.alphaF());
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::setSaturation(const float &inSaturation)
@@ -52,6 +55,7 @@ void ColorWheel::setSaturation(const float &inSaturation)
     inColor.setHsvF(mColor.hueF(), inSaturation, mColor.valueF(), mColor.alphaF());
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::setValue(const float &inValue)
@@ -60,6 +64,7 @@ void ColorWheel::setValue(const float &inValue)
     inColor.setHsvF(mColor.hueF(), mColor.saturationF(), inValue, mColor.alphaF());
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::setAlpha(const float &inAlpha)
@@ -68,6 +73,7 @@ void ColorWheel::setAlpha(const float &inAlpha)
     inColor.setHsvF(mColor.hueF(), mColor.saturationF(), mColor.valueF(), inAlpha);
     mColor = inColor;
     emit colorChanged(mColor);
+    repaint();
 }
 
 void ColorWheel::initialize()
