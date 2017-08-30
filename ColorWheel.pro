@@ -26,10 +26,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         colorwheel.cpp \
-    pmath.cpp
+    form.cpp \
+    phvector3.cpp \
+    phmath.cpp
 
 HEADERS += \
         colorwheel.h \
-    pmath.h
+    form.h \
+    phvector3.h \
+    phmath.h
 
-FORMS +=
+FORMS += \
+    form.ui
+
+
+QMAKE_CXXFLAGS += -msse4.1

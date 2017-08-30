@@ -1,5 +1,5 @@
-#ifndef PMATH_H
-#define PMATH_H
+#ifndef PHMATH_H
+#define PHMATH_H
 
 #include <cmath>
 
@@ -23,4 +23,4 @@ inline T radiansToDegrees(const T &angle) { return angle * (180 / M_PI); }
 } // END NAMESPACE MATH
 } // END NAMESPACE PHYSIS
 
-#endif // PMATH_H
+#endif // PHMATH_H

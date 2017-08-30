@@ -9,7 +9,10 @@
 #include <QMouseEvent>
 #include <QVector2D>
 
-#include "pmath.h"
+#include <QDebug>
+
+#include "phmath.h"
+#include "phvector3.h"
 
 class ColorWheel : public QWidget
 {
@@ -37,7 +40,7 @@ private:
     bool isWheelHit();
     bool isQuadHit();
     unsigned char getQuadrant();
-    float calcAngle(QVector2D v1, QVector2D v2);
+    float calcAngle(Physis::PhVector3 v1, Physis::PhVector3 v2);
 
     void wheelUpdate();
     void chooserUpdate();
@@ -54,23 +57,23 @@ private:
         RIGHT_DOWN = 3
     };
 
-    QColor mColor;
-    QConicalGradient mGradient;
-    QLinearGradient saturationGradient;
-    QLinearGradient valueGradient;
-    QPoint arrow[3];
-    float mInnerRadius;
-    float mOuterRadius;
-    QVector2D mMouseVec;
-    QPointF mWorldCenter;
+    QColor m_Color;
+    QConicalGradient m_Gradient;
+    QLinearGradient m_SaturationGradient;
+    QLinearGradient m_ValueGradient;
+    QPoint m_Arrow[3];
+    float m_InnerRadius;
+    float m_OuterRadius;
+    Physis::PhVector3 m_MouseVec;
+    QPointF m_WorldCenter;
 
-    bool mWheelHit;
-    bool mQuadHit;
-    QRectF mChooserSize;
+    bool m_WheelHit;
+    bool m_QuadHit;
+    QRectF m_ChooserSize;
 
-    QPoint mIndicatorPosition;
-    int indicatorSize;
-    int indicatorBorder;
+    QPoint m_IndicatorPosition;
+    short m_IndicatorSize;
+    short m_IndicatorBorder;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
