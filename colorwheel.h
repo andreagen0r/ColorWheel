@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
-#include <QVector2D>
+//#include <QVector2D>
 
 #include <QDebug>
 
