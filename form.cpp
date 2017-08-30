@@ -63,21 +63,21 @@ void Form::on_horizontalSlider_3_valueChanged(int value)
 
 void Form::on_doubleSpinBox_valueChanged(double arg1)
 {
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(arg1, ui->widget->getColor().saturationF(), ui->widget->getColor().valueF());
-//    ui->widget->setColor(tempColor);
+    QColor tempColor = ui->widget->getColor();
+    tempColor.setHsvF(arg1, ui->widget->getColor().saturationF(), ui->widget->getColor().valueF());
+    ui->widget->setColor(tempColor);
 }
 
 void Form::on_doubleSpinBox_2_valueChanged(double arg1)
 {
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(ui->widget->getColor().hueF(), arg1, ui->widget->getColor().valueF());
-//    ui->widget->setColor(tempColor);
+    QColor tempColor = ui->widget->getColor();
+    tempColor.setHsvF(ui->widget->getColor().hueF(), arg1, ui->widget->getColor().valueF());
+    ui->widget->setColor(tempColor);
 }
 
 void Form::on_doubleSpinBox_3_valueChanged(double arg1)
 {
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(ui->widget->getColor().hueF(), ui->widget->getColor().saturationF(), arg1);
-//    ui->widget->setColor(tempColor);
+    QColor tempColor = ui->widget->getColor();
+    tempColor.setHsvF(ui->widget->getColor().hueF(), ui->widget->getColor().saturationF(), arg1);
+    ui->widget->setColor(tempColor);
 }

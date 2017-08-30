@@ -27,14 +27,9 @@ QColor ColorWheel::getColor() const
 
 void ColorWheel::setColor(const QColor &inColor)
 {
-<<<<<<< HEAD
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 
@@ -42,77 +37,49 @@ void ColorWheel::setColor(const float &inHue, const float &inSaturation, const f
 {
     QColor inColor(Qt::black);
     inColor.setHsvF(inHue, inSaturation, inValue, inAlpha);
-<<<<<<< HEAD
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 
 void ColorWheel::setHue(const float &inHue)
 {
     QColor inColor(Qt::black);
-<<<<<<< HEAD
     inColor.setHsvF(inHue, m_Color.saturationF(), m_Color.valueF(), m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    inColor.setHsvF(inHue, mColor.saturationF(), mColor.valueF(), mColor.alphaF());
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 
 void ColorWheel::setSaturation(const float &inSaturation)
 {
     QColor inColor(Qt::black);
-<<<<<<< HEAD
+
     inColor.setHsvF(m_Color.hueF(), inSaturation, m_Color.valueF(), m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    inColor.setHsvF(mColor.hueF(), inSaturation, mColor.valueF(), mColor.alphaF());
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 void ColorWheel::setValue(const float &inValue)
 {
     QColor inColor(Qt::black);
-<<<<<<< HEAD
     inColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), inValue, m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    inColor.setHsvF(mColor.hueF(), mColor.saturationF(), inValue, mColor.alphaF());
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 
 void ColorWheel::setAlpha(const float &inAlpha)
 {
     QColor inColor(Qt::black);
-<<<<<<< HEAD
     inColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), m_Color.valueF(), inAlpha);
     m_Color = inColor;
     emit colorChanged(m_Color);
     indicatorUpdate();
-=======
-    inColor.setHsvF(mColor.hueF(), mColor.saturationF(), mColor.valueF(), inAlpha);
-    mColor = inColor;
-    emit colorChanged(mColor);
->>>>>>> ae653c9ad9a80e2af77f20370807397bdc633db8
     repaint();
 }
 
