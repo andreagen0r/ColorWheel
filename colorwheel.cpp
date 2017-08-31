@@ -305,12 +305,6 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 
     indicatorUpdate();
     drawIndicators(&painter);
-
-    // Debug color output;
-//    painter.end();
-//    painter.begin(this);
-//    painter.setBrush(getColor());
-//    painter.drawRect(0, 0, 60, 60);
 }
 
 void ColorWheel::mousePressEvent(QMouseEvent *event)
