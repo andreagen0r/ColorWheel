@@ -97,27 +97,13 @@ void ColorWheel::initialize()
 
 bool ColorWheel::isWheelHit()
 {
-    if (m_MouseVec.length() > m_InnerRadius && m_MouseVec.length() < m_OuterRadius)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (m_MouseVec.length() > m_InnerRadius && m_MouseVec.length() < m_OuterRadius);
 }
 
 bool ColorWheel::isQuadHit()
 {
-    if(m_ChooserSize.left() <= m_MouseVec.x && m_ChooserSize.right() >= m_MouseVec.x
-            && m_ChooserSize.top() <= m_MouseVec.y && m_ChooserSize.bottom() >= m_MouseVec.y)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (m_ChooserSize.left() <= m_MouseVec.x && m_ChooserSize.right() >= m_MouseVec.x
+            && m_ChooserSize.top() <= m_MouseVec.y && m_ChooserSize.bottom() >= m_MouseVec.y);
 }
 
 unsigned char ColorWheel::getQuadrant()
@@ -335,17 +321,17 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     m_WheelHit = isWheelHit();
     m_QuadHit = isQuadHit();
 
-    if(isQuadHit())
+    if(m_WheelHit)
+    {
+      wheelUpdate();
+      return;
+    }
+
+    if(m_QuadHit)
     {
         setCursor(Qt::UpArrowCursor);
         chooserUpdate();
         return;
-    }
-
-    if(isWheelHit())
-    {
-      wheelUpdate();
-      return;
     }
 }
 

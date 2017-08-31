@@ -14,8 +14,7 @@ Form::Form(QWidget *parent) :
     ui(new Ui::Form)
 {
     ui->setupUi(this);
-    connect(ui->widget, SIGNAL(colorChanged(QColor)), this, SLOT(cor(QColor)));
-    connect(ui->doubleSpinBox, SIGNAL(valueChanged(double)), ui->widget, SLOT(setHue(double)));
+    connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 
     ui->widget->setColor(Qt::yellow);
 
