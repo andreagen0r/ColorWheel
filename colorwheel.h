@@ -7,7 +7,6 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
-//#include <QVector2D>
 
 #include <QDebug>
 
@@ -20,17 +19,17 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(const QColor &inColor, QWidget *parent = 0);
+    explicit ColorWheel(QColor inColor, QWidget *parent = 0);
     ~ColorWheel();
 
 public slots:
     QColor getColor() const;
     void setColor(const QColor &inColor);
-    void setColor(const float &inHue, const float &inSaturation, const float &inValue, const float &inAlpha);
-    void setHue(const float &inHue);
-    void setSaturation(const float &inSaturation);
-    void setValue(const float &inValue);
-    void setAlpha(const float &inAlpha);
+    void setColor(float inHue, float inSaturation, float inValue, float inAlpha);
+    void setHue(float inHue);
+    void setSaturation(float inSaturation);
+    void setValue(float inValue);
+    void setAlpha(float inAlpha);
 
 signals:
     void colorChanged(QColor inValue);

@@ -7,7 +7,7 @@ ColorWheel::ColorWheel(QWidget *parent) :
     initialize();
 }
 
-ColorWheel::ColorWheel(const QColor &inColor, QWidget *parent) :
+ColorWheel::ColorWheel(QColor inColor, QWidget *parent) :
     QWidget(parent)
 {
 
@@ -29,58 +29,52 @@ void ColorWheel::setColor(const QColor &inColor)
 {
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
 
-void ColorWheel::setColor(const float &inHue, const float &inSaturation, const float &inValue, const float &inAlpha)
+void ColorWheel::setColor(float inHue, float inSaturation, float inValue, float inAlpha)
 {
     QColor inColor(Qt::black);
     inColor.setHsvF(inHue, inSaturation, inValue, inAlpha);
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
 
-void ColorWheel::setHue(const float &inHue)
+void ColorWheel::setHue(float inHue)
 {
     QColor inColor(Qt::black);
     inColor.setHsvF(inHue, m_Color.saturationF(), m_Color.valueF(), m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
 
-void ColorWheel::setSaturation(const float &inSaturation)
+void ColorWheel::setSaturation(float inSaturation)
 {
     QColor inColor(Qt::black);
 
     inColor.setHsvF(m_Color.hueF(), inSaturation, m_Color.valueF(), m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
-void ColorWheel::setValue(const float &inValue)
+void ColorWheel::setValue(float inValue)
 {
     QColor inColor(Qt::black);
     inColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), inValue, m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
 
-void ColorWheel::setAlpha(const float &inAlpha)
+void ColorWheel::setAlpha(float inAlpha)
 {
     QColor inColor(Qt::black);
     inColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), m_Color.valueF(), inAlpha);
     m_Color = inColor;
     emit colorChanged(m_Color);
-    indicatorUpdate();
-    repaint();
+    update();
 }
 
 void ColorWheel::initialize()
@@ -322,6 +316,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.translate(m_WorldCenter);
     drawWheel(&painter);
     drawChooser(&painter);
+
+    indicatorUpdate();
     drawIndicators(&painter);
 
     // Debug color output;
@@ -333,9 +329,6 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
-//    m_MouseVec.setX(event->x() - width() / 2);
-//    m_MouseVec.setY(event->y() - height() / 2);
-
     m_MouseVec.x = event->x() - width() / 2.0f;
     m_MouseVec.y = event->y() - height() / 2.0f;
 
@@ -364,9 +357,6 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
-//    m_MouseVec.setX(event->x() - width() / 2);
-//    m_MouseVec.setY(event->y() - height() / 2);
-
     m_MouseVec.x = event->x() - width() / 2.0f;
     m_MouseVec.y = event->y() - height() / 2.0f;
 
