@@ -79,8 +79,6 @@ void ColorWheel::setAlpha(float inAlpha)
 
 void ColorWheel::initialize()
 {
-    m_wheelPixmap = new QPixmap(m_OuterRadius, m_OuterRadius);
-
     // Wheel gradient
     m_Gradient.setAngle(0.0);
     m_Gradient.setCenter(QPointF(0.0, 0.0));
@@ -243,10 +241,13 @@ void ColorWheel::indicatorUpdate()
 void ColorWheel::drawWheel()
 {
     QPainterPath path;
+    m_wheelPixmap->fill(Qt::black);
     QPainter painter(m_wheelPixmap);
+    painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_Gradient);
+    painter.setClipping(true);
     path.addEllipse(QPointF(0.0f, 0.0f), m_InnerRadius, m_InnerRadius);
     path.addEllipse(QPointF(0.0f, 0.0f), m_OuterRadius, m_OuterRadius);
     painter.drawPath(path);
@@ -395,7 +396,7 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_ValueGradient.setStart(QPointF(0, -diagonal + gap ));
    m_ValueGradient.setFinalStop(QPointF(0, diagonal - gap));
 
-   m_wheelPixmap->copy(0, 0, width(), height());
+   m_wheelPixmap = new QPixmap(width(), height());
    drawWheel();
 
    indicatorUpdate();
