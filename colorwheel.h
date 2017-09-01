@@ -46,7 +46,7 @@ private:
     void indicatorUpdate();
 
     void drawWheel();
-    void drawChooser(QPainter *inPainter);
+    void drawChooser();
     void drawIndicators(QPainter *inPainter);
 
     enum Quadrant : unsigned char {
@@ -75,6 +75,7 @@ private:
     short m_IndicatorBorder;
 
     QPixmap *m_wheelPixmap;
+    QPixmap *m_chooserPixmap;
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

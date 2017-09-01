@@ -241,21 +241,27 @@ void ColorWheel::indicatorUpdate()
 void ColorWheel::drawWheel()
 {
     QPainterPath path;
-    m_wheelPixmap->fill(Qt::black);
+    m_wheelPixmap = new QPixmap(width(), height());
+    m_wheelPixmap->fill(QColor(0,0,0,0));
     QPainter painter(m_wheelPixmap);
     painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_Gradient);
-    painter.setClipping(true);
+
     path.addEllipse(QPointF(0.0f, 0.0f), m_InnerRadius, m_InnerRadius);
     path.addEllipse(QPointF(0.0f, 0.0f), m_OuterRadius, m_OuterRadius);
     painter.drawPath(path);
+
 }
 
-void ColorWheel::drawChooser(QPainter *inPainter)
+void ColorWheel::drawChooser()
 {
-    inPainter->setRenderHints(QPainter::Antialiasing, false);
+    m_chooserPixmap = new QPixmap(width(), height());
+    m_chooserPixmap->fill(QColor(0,0,0,0));
+    QPainter painter(m_chooserPixmap);
+    painter.translate(m_WorldCenter);
+    painter.setRenderHints(QPainter::Antialiasing, false);
     QColor pureColor;
     pureColor.setHsvF(getColor().hueF(), 0.0f, 1.0f, 1.0f);
 
@@ -264,11 +270,11 @@ void ColorWheel::drawChooser(QPainter *inPainter)
     m_SaturationGradient.setColorAt(1.0f, valueColor);
     m_SaturationGradient.setColorAt(0.0f, pureColor);
 
-    inPainter->setPen(QPen(Qt::black, 1, Qt::SolidLine));
-    inPainter->setBrush(m_SaturationGradient);
-    inPainter->drawRect(m_ChooserSize);
-    inPainter->setBrush(m_ValueGradient);
-    inPainter->drawRect(m_ChooserSize );
+    painter.setPen(QPen(Qt::black, 1, Qt::SolidLine));
+    painter.setBrush(m_SaturationGradient);
+    painter.drawRect(m_ChooserSize);
+    painter.setBrush(m_ValueGradient);
+    painter.drawRect(m_ChooserSize );
 }
 
 void ColorWheel::drawIndicators(QPainter *inPainter)
@@ -306,7 +312,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     painter.translate(m_WorldCenter);
 //    drawWheel(&painter);
     painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_wheelPixmap);
-    drawChooser(&painter);
+//    drawChooser(&painter);
+    painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_chooserPixmap);
 
     indicatorUpdate();
     drawIndicators(&painter);
@@ -348,6 +355,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     if(m_WheelHit)
     {
         wheelUpdate();
+        drawChooser();
         return;
     }
 
@@ -396,7 +404,8 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_ValueGradient.setStart(QPointF(0, -diagonal + gap ));
    m_ValueGradient.setFinalStop(QPointF(0, diagonal - gap));
 
-   m_wheelPixmap = new QPixmap(width(), height());
+
+   drawChooser();
    drawWheel();
 
    indicatorUpdate();
