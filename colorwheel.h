@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>
-
+#include <QPixmap>
 #include <QDebug>
 
 #include "phmath.h"
@@ -45,7 +45,7 @@ private:
     void chooserUpdate();
     void indicatorUpdate();
 
-    void drawWheel(QPainter *inPainter);
+    void drawWheel();
     void drawChooser(QPainter *inPainter);
     void drawIndicators(QPainter *inPainter);
 
@@ -74,6 +74,7 @@ private:
     short m_IndicatorSize;
     short m_IndicatorBorder;
 
+    QPixmap *m_wheelPixmap;
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
