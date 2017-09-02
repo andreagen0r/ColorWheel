@@ -29,6 +29,7 @@ void ColorWheel::setColor(const QColor &inColor)
 {
     m_Color = inColor;
     emit colorChanged(m_Color);
+    drawChooser();
     update();
 }
 
@@ -38,6 +39,7 @@ void ColorWheel::setColor(float inHue, float inSaturation, float inValue, float 
     inColor.setHsvF(inHue, inSaturation, inValue, inAlpha);
     m_Color = inColor;
     emit colorChanged(m_Color);
+    drawChooser();
     update();
 }
 
@@ -47,6 +49,7 @@ void ColorWheel::setHue(float inHue)
     inColor.setHsvF(inHue, m_Color.saturationF(), m_Color.valueF(), m_Color.alphaF());
     m_Color = inColor;
     emit colorChanged(m_Color);
+    drawChooser();
     update();
 }
 
@@ -240,33 +243,33 @@ void ColorWheel::indicatorUpdate()
 
 void ColorWheel::drawWheel()
 {
-    QPainterPath path;
     m_wheelPixmap = new QPixmap(width(), height());
     m_wheelPixmap->fill(QColor(0,0,0,0));
+
+    QPainterPath path;
     QPainter painter(m_wheelPixmap);
     painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_Gradient);
-
     path.addEllipse(QPointF(0.0f, 0.0f), m_InnerRadius, m_InnerRadius);
     path.addEllipse(QPointF(0.0f, 0.0f), m_OuterRadius, m_OuterRadius);
     painter.drawPath(path);
-
 }
 
 void ColorWheel::drawChooser()
 {
     m_chooserPixmap = new QPixmap(width(), height());
     m_chooserPixmap->fill(QColor(0,0,0,0));
+
+    QColor pureColor;
+    pureColor.setHsvF(getColor().hueF(), 0.0f, 1.0f, 1.0f);
+    QColor valueColor(Qt::black);
+    valueColor.setHsvF(getColor().hueF(), 1.0f, 1.0f, 1.0f);
+
     QPainter painter(m_chooserPixmap);
     painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, false);
-    QColor pureColor;
-    pureColor.setHsvF(getColor().hueF(), 0.0f, 1.0f, 1.0f);
-
-    QColor valueColor(Qt::black);
-    valueColor.setHsvF(getColor().hueF(), 1.0f, 1.0f, 1.0f);
     m_SaturationGradient.setColorAt(1.0f, valueColor);
     m_SaturationGradient.setColorAt(0.0f, pureColor);
 
@@ -355,7 +358,6 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     if(m_WheelHit)
     {
         wheelUpdate();
-        drawChooser();
         return;
     }
 
