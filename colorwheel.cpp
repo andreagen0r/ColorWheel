@@ -313,11 +313,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     // Move the world to the center of the screen
     painter.translate(m_WorldCenter);
-//    drawWheel(&painter);
     painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_wheelPixmap);
-//    drawChooser(&painter);
     painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_chooserPixmap);
-
     indicatorUpdate();
     drawIndicators(&painter);
 }
