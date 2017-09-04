@@ -76,6 +76,8 @@ private:
 
     QPixmap *m_wheelPixmap;
     QPixmap *m_chooserPixmap;
+
+    int nova;
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
