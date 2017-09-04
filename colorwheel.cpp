@@ -243,11 +243,11 @@ void ColorWheel::indicatorUpdate()
 
 void ColorWheel::drawWheel()
 {
-    m_wheelPixmap = new QPixmap(width(), height());
-    m_wheelPixmap->fill(QColor(0,0,0,0));
+    m_wheelPixmap = QPixmap(width(), height());
+    m_wheelPixmap.fill(QColor(0,0,0,0));
 
     QPainterPath path;
-    QPainter painter(m_wheelPixmap);
+    QPainter painter(&m_wheelPixmap);
     painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
@@ -259,15 +259,15 @@ void ColorWheel::drawWheel()
 
 void ColorWheel::drawChooser()
 {
-    m_chooserPixmap = new QPixmap(width(), height());
-    m_chooserPixmap->fill(QColor(0,0,0,0));
+    m_chooserPixmap = QPixmap(width(), height());
+    m_chooserPixmap.fill(QColor(0,0,0,0));
 
     QColor pureColor;
     pureColor.setHsvF(getColor().hueF(), 0.0f, 1.0f, 1.0f);
     QColor valueColor(Qt::black);
     valueColor.setHsvF(getColor().hueF(), 1.0f, 1.0f, 1.0f);
 
-    QPainter painter(m_chooserPixmap);
+    QPainter painter(&m_chooserPixmap);
     painter.translate(m_WorldCenter);
     painter.setRenderHints(QPainter::Antialiasing, false);
     m_SaturationGradient.setColorAt(1.0f, valueColor);
@@ -313,8 +313,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     // Move the world to the center of the screen
     painter.translate(m_WorldCenter);
-    painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_wheelPixmap);
-    painter.drawPixmap(-width()/2, -height()/2, width(), height(), *m_chooserPixmap);
+    painter.drawPixmap(-width()/2, -height()/2, width(), height(), m_wheelPixmap);
+    painter.drawPixmap(-width()/2, -height()/2, width(), height(), m_chooserPixmap);
     indicatorUpdate();
     drawIndicators(&painter);
 }
@@ -402,7 +402,6 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
 
    m_ValueGradient.setStart(QPointF(0, -diagonal + gap ));
    m_ValueGradient.setFinalStop(QPointF(0, diagonal - gap));
-
 
    drawChooser();
    drawWheel();

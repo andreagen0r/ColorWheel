@@ -24,3 +24,5 @@ FORMS += \
         form.ui
 
 QMAKE_CXXFLAGS += -msse4.1
+
+#QMAKE_CXXFLAGS_RELEASE -= -O3

@@ -73,8 +73,8 @@ private:
     short m_IndicatorSize;
     short m_IndicatorBorder;
 
-    QPixmap *m_wheelPixmap;
-    QPixmap *m_chooserPixmap;
+    QPixmap m_wheelPixmap;
+    QPixmap m_chooserPixmap;
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
