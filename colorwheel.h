@@ -40,7 +40,6 @@ private:
     bool isQuadHit();
     unsigned char getQuadrant();
     float calcAngle(Physis::PhVector3 v1, Physis::PhVector3 v2);
-
     void wheelUpdate();
     void chooserUpdate();
     void indicatorUpdate();
@@ -76,7 +75,6 @@ private:
 
     QPixmap *m_wheelPixmap;
     QPixmap *m_chooserPixmap;
-
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
