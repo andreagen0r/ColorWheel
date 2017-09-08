@@ -13,23 +13,23 @@
 #include "phmath.h"
 #include "phvector3.h"
 
-class ColorWheel : public QWidget
+class ColorWheel : public QWidget, public QColor
 {
     Q_OBJECT
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(QColor inColor, QWidget *parent = 0);
+    explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
     ~ColorWheel();
 
 public slots:
     QColor getColor() const;
-    void setColor(const QColor &inColor);
-    void setColor(float inHue, float inSaturation, float inValue, float inAlpha);
-    void setHue(float inHue);
-    void setSaturation(float inSaturation);
-    void setValue(float inValue);
-    void setAlpha(float inAlpha);
+    void setColor(const QColor &in_Color);
+    void setColor(const float in_Hue, const float in_Saturation, const float in_Value, const float in_Alpha = 1.0);
+    void setHue(const float in_Hue);
+    void setSaturation(const float in_Saturation);
+    void setValue(const float in_Value);
+    void setAlpha(const float in_Alpha);
 
 signals:
     void colorChanged(QColor inValue);
@@ -46,7 +46,7 @@ private:
 
     void drawWheel();
     void drawChooser();
-    void drawIndicators(QPainter *inPainter);
+    void drawIndicators(QPainter *in_Painter);
 
     enum Quadrant : unsigned char {
         LEFT_UP = 0,
@@ -69,12 +69,13 @@ private:
     bool m_QuadHit;
     QRectF m_ChooserSize;
 
-    QPoint m_IndicatorPosition;
-    short m_IndicatorSize;
-    short m_IndicatorBorder;
+    QPointF m_IndicatorPosition;
+    float m_IndicatorSize;
+    float m_IndicatorBorder;
 
-    QPixmap m_wheelPixmap;
-    QPixmap m_chooserPixmap;
+    QPixmap m_WheelPixmap;
+    QPixmap m_ChooserPixmap;
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
