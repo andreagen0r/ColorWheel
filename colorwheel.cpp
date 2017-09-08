@@ -317,7 +317,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
     painter->drawEllipse(m_IndicatorPosition, m_IndicatorSize, m_IndicatorSize);
     painter->setBrush(Qt::NoBrush);
     painter->setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    painter->drawEllipse(m_IndicatorPosition, m_IndicatorSize -1.0 , m_IndicatorSize - 1.0);
+    painter->drawEllipse(m_IndicatorPosition, m_IndicatorSize - 1.0f , m_IndicatorSize - 1.0f);
 }
 
 
