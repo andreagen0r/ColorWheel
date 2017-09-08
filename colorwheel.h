@@ -13,7 +13,7 @@
 #include "phmath.h"
 #include "phvector3.h"
 
-class ColorWheel : public QWidget, public QColor
+class ColorWheel : public QWidget
 {
     Q_OBJECT
 
@@ -56,7 +56,7 @@ private:
     };
 
     QColor m_Color;
-    QConicalGradient m_Gradient;
+    QConicalGradient m_WheelGradient;
     QLinearGradient m_SaturationGradient;
     QLinearGradient m_ValueGradient;
     QPoint m_Arrow[3];
@@ -71,7 +71,6 @@ private:
 
     QPointF m_IndicatorPosition;
     float m_IndicatorSize;
-    float m_IndicatorBorder;
 
     QPixmap m_WheelPixmap;
     QPixmap m_ChooserPixmap;

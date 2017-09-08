@@ -16,7 +16,7 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 
-    ui->widget->setColor(0.5, 0.7, 0.6);
+    ui->widget->setColor(0.3, 0.5, 0.5);
 
     ui->horizontalSlider->setValue(ui->widget->getColor().hslHue());
     ui->horizontalSlider_2->setValue(ui->widget->getColor().saturation());
@@ -41,10 +41,9 @@ void Form::cor(const QColor &inCor)
 
 void Form::on_horizontalSlider_valueChanged(int value)
 {
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsv(value, ui->widget->getColor().saturation(), ui->widget->getColor().value());
-    ui->widget->setHsv(value, ui->widget->getColor().saturation(), ui->widget->getColor().value());
-//    ui->widget->setColor(tempColor);
+    QColor tempColor = ui->widget->getColor();
+    tempColor.setHsv(value, ui->widget->getColor().saturation(), ui->widget->getColor().value());
+    ui->widget->setColor(tempColor);
 }
 
 void Form::on_horizontalSlider_2_valueChanged(int value)
