@@ -58,8 +58,15 @@ class PhVector3
   inline PhVector3 normalize() const { return _mm_mul_ps(m_value, _mm_rsqrt_ps(_mm_dp_ps(m_value, m_value, 0x7F))); }
 
   // overloaded operators that ensure alignment
-//  inline void* operator new[](size_t x) { return _aligned_malloc(x, 16); }
-//  inline void operator delete[](void* x) { if (x) _aligned_free(x); }
+#ifdef WIN32
+  inline void* operator new[](size_t x) { return _aligned_malloc(x, 16); }
+  inline void operator delete[](void* x) { if (x) _aligned_free(x); }
+#endif
+
+#ifdef __APPLE__
+  inline void* operator new[](size_t x) { return _mm_malloc(x, 16); }
+  inline void operator delete[](void* x) { if (x) _mm_free(x); }
+#endif
 
   // Member variables
   union

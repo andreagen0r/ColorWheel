@@ -12,6 +12,7 @@
 
 #include "phmath.h"
 #include "phvector3.h"
+#include "abstractcolorchooser.h"
 
 class ColorWheel : public QWidget
 {
@@ -46,7 +47,7 @@ private:
 
     void drawWheel();
     void drawChooser();
-    void drawIndicators(QPainter *in_Painter);
+    void drawIndicators();
 
     enum Quadrant : unsigned char {
         LEFT_UP = 0,
@@ -55,11 +56,12 @@ private:
         RIGHT_DOWN = 3
     };
 
+
     QColor m_Color;
     QConicalGradient m_WheelGradient;
     QLinearGradient m_SaturationGradient;
     QLinearGradient m_ValueGradient;
-    QPoint m_Arrow[3];
+    QPointF m_Arrow[3];
     float m_InnerRadius;
     float m_OuterRadius;
     Physis::PhVector3 m_MouseVec;
