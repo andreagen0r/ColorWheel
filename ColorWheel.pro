@@ -22,12 +22,16 @@ HEADERS += \
         form.h \
         phvector3.h \
         phmath.h \
-    abstractcolorchooser.h
+    abstractcolorchooser.h \
+    phvector3x.h
 
 FORMS += \
         form.ui
 
 QMAKE_CXXFLAGS += -msse4 -msse4.1 -msse4.2
+
+QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_AVX2
+
 
 CONFIG(release, debug|release) {
 

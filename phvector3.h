@@ -1,7 +1,7 @@
 #ifndef PHVECTOR3_H
 #define PHVECTOR3_H
 
-#include <nmmintrin.h>
+#include <nmmintrin.h> // SSE 4.2
 
 namespace Physis {
 
@@ -83,9 +83,3 @@ inline PhVector3 operator/(float a, const PhVector3& b) { return PhVector3(_mm_s
 
 } // END NAMESPACE PHYSIS
 #endif // PHVECTOR3_H
-
-
-
-//#include <nmmintrin.h>
-
-
