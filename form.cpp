@@ -16,7 +16,7 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 
-    ui->widget->setColor(Qt::yellow);
+    ui->widget->setColor(0.3, 0.5, 0.5);
 
     ui->horizontalSlider->setValue(ui->widget->getColor().hslHue());
     ui->horizontalSlider_2->setValue(ui->widget->getColor().saturation());
@@ -59,24 +59,3 @@ void Form::on_horizontalSlider_3_valueChanged(int value)
     tempColor.setHsv(ui->widget->getColor().hue(), ui->widget->getColor().saturation(), value);
     ui->widget->setColor(tempColor);
 }
-
-//void Form::on_doubleSpinBox_valueChanged(double arg1)
-//{
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(arg1, ui->widget->getColor().saturationF(), ui->widget->getColor().valueF());
-//    ui->widget->setColor(tempColor);
-//}
-
-//void Form::on_doubleSpinBox_2_valueChanged(double arg1)
-//{
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(ui->widget->getColor().hueF(), arg1, ui->widget->getColor().valueF());
-//    ui->widget->setColor(tempColor);
-//}
-
-//void Form::on_doubleSpinBox_3_valueChanged(double arg1)
-//{
-//    QColor tempColor = ui->widget->getColor();
-//    tempColor.setHsvF(ui->widget->getColor().hueF(), ui->widget->getColor().saturationF(), arg1);
-//    ui->widget->setColor(tempColor);
-//}

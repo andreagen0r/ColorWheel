@@ -19,17 +19,17 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(QColor inColor, QWidget *parent = 0);
+    explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
     ~ColorWheel();
 
 public slots:
     QColor getColor() const;
-    void setColor(const QColor &inColor);
-    void setColor(float inHue, float inSaturation, float inValue, float inAlpha);
-    void setHue(float inHue);
-    void setSaturation(float inSaturation);
-    void setValue(float inValue);
-    void setAlpha(float inAlpha);
+    void setColor(const QColor &in_Color);
+    void setColor(const double in_Hue, const double in_Saturation, const double in_Value, const double in_Alpha = 1.0);
+    void setHue(const double in_Hue);
+    void setSaturation(const double in_Saturation);
+    void setValue(const double in_Value);
+    void setAlpha(const double in_Alpha);
 
 signals:
     void colorChanged(QColor inValue);
@@ -39,14 +39,14 @@ private:
     bool isWheelHit();
     bool isQuadHit();
     unsigned char getQuadrant();
-    float calcAngle(Physis::PhVector3 v1, Physis::PhVector3 v2);
+    double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
     void wheelUpdate();
     void chooserUpdate();
     void indicatorUpdate();
 
     void drawWheel();
-    void drawChooser();
-    void drawIndicators(QPainter *inPainter);
+    void drawColor();
+    void drawIndicators();
 
     enum Quadrant : unsigned char {
         LEFT_UP = 0,
@@ -56,31 +56,35 @@ private:
     };
 
     QColor m_Color;
-    QConicalGradient m_Gradient;
+
+    QConicalGradient m_WheelGradient;
     QLinearGradient m_SaturationGradient;
     QLinearGradient m_ValueGradient;
-    QPoint m_Arrow[3];
-    float m_InnerRadius;
-    float m_OuterRadius;
+
     Physis::PhVector3 m_MouseVec;
+
+    QPointF m_Arrow[3];
     QPointF m_WorldCenter;
+    QPointF m_IndicatorPosition;
 
     bool m_WheelHit;
-    bool m_QuadHit;
+    bool m_ChooserHit;
+
     QRectF m_ChooserSize;
 
-    QPoint m_IndicatorPosition;
-    short m_IndicatorSize;
-    short m_IndicatorBorder;
+    double m_InnerRadius;
+    double m_OuterRadius;
+    double m_IndicatorSize;
 
-    QPixmap m_wheelPixmap;
-    QPixmap m_chooserPixmap;
+    QPixmap m_WheelPixmap;
+    QPixmap m_ChooserPixmap;
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent *) override;
 };
 
 #endif // COLORWHEEL_H
