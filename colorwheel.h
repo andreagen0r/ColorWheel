@@ -22,14 +22,10 @@ public:
     explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
     ~ColorWheel();
 
-public slots:
     QColor getColor() const;
+
+public slots:
     void setColor(const QColor &in_Color);
-    void setColor(const double in_Hue, const double in_Saturation, const double in_Value, const double in_Alpha = 1.0);
-    void setHue(const double in_Hue);
-    void setSaturation(const double in_Saturation);
-    void setValue(const double in_Value);
-    void setAlpha(const double in_Alpha);
 
 signals:
     void colorChanged(QColor inValue);
@@ -45,7 +41,7 @@ private:
     void indicatorUpdate();
 
     void drawWheel();
-    void drawColor();
+    void drawChooser();
     void drawIndicators();
 
     enum Quadrant : unsigned char {
@@ -62,9 +58,9 @@ private:
     QLinearGradient m_ValueGradient;
 
     Physis::PhVector3 m_MouseVec;
+    Physis::PhVector3 m_WorldCenter;
 
     QPointF m_Arrow[3];
-    QPointF m_WorldCenter;
     QPointF m_IndicatorPosition;
 
     bool m_WheelHit;
@@ -72,6 +68,9 @@ private:
 
     QRectF m_ChooserSize;
 
+    double m_hue;
+    double m_saturation;
+    double m_value;
     double m_InnerRadius;
     double m_OuterRadius;
     double m_IndicatorSize;

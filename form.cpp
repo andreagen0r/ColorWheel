@@ -16,7 +16,7 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 
-    ui->widget->setColor(0.3, 0.5, 0.5);
+    ui->widget->setColor(QColor(90, 18, 128));
 
     ui->horizontalSlider->setValue(ui->widget->getColor().hslHue());
     ui->horizontalSlider_2->setValue(ui->widget->getColor().saturation());

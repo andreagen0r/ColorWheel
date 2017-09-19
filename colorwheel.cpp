@@ -31,47 +31,6 @@ void ColorWheel::setColor(const QColor &in_Color)
     indicatorUpdate();
 }
 
-void ColorWheel::setColor(const double in_Hue, const double in_Saturation, const double in_Value, const double in_Alpha)
-{
-    QColor in_Color(Qt::black);
-    in_Color.setHsvF(in_Hue, in_Saturation, in_Value, in_Alpha);
-    m_Color = in_Color;
-    emit colorChanged(m_Color);
-    indicatorUpdate();
-}
-
-void ColorWheel::setHue(const double in_Hue)
-{
-    QColor tmpColor(Qt::black);
-    tmpColor.setHsvF(in_Hue, m_Color.saturationF(), m_Color.valueF(), m_Color.alphaF());
-    m_Color = tmpColor;
-    emit colorChanged(m_Color);
-}
-
-void ColorWheel::setSaturation(const double in_Saturation)
-{
-    QColor in_Color(Qt::black);
-
-    in_Color.setHsvF(m_Color.hueF(), in_Saturation, m_Color.valueF(), m_Color.alphaF());
-    m_Color = in_Color;
-    emit colorChanged(m_Color);
-}
-void ColorWheel::setValue(const double in_Value)
-{
-    QColor tmpColor(Qt::black);
-    tmpColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), in_Value, m_Color.alphaF());
-    m_Color = tmpColor;
-    emit colorChanged(m_Color);
-}
-
-void ColorWheel::setAlpha(const double in_Alpha)
-{
-    QColor tmpColor(Qt::black);
-    tmpColor.setHsvF(m_Color.hueF(), m_Color.saturationF(), m_Color.valueF(), in_Alpha);
-    m_Color = tmpColor;
-    emit colorChanged(m_Color);
-}
-
 void ColorWheel::initialize()
 {
     // Wheel gradient
@@ -146,7 +105,11 @@ void ColorWheel::wheelUpdate()
 {
     if(m_WheelHit)
     {
-        setHue((angleAt(m_MouseVec.normalize(), Physis::PhVector3(1.0, 0.0, 0.0).normalize())) / 360);
+        m_hue = angleAt(m_MouseVec.normalize(), Physis::PhVector3(1.0, 0.0, 0.0).normalize()) / 360;
+        QColor tmp;
+        tmp.setHsvF(m_hue, m_Color.saturationF(), m_Color.valueF());
+        setColor(tmp);
+        update();
     }
 }
 
@@ -190,25 +153,28 @@ void ColorWheel::wheelUpdate()
          // Setup saturation
          if (x == 0)
          {
-             setSaturation(0.5);
+             m_saturation = 0.5;
          }
          else
          {
-             setSaturation((x / m_ChooserSize.width()) + 0.5);
+             m_saturation = (x / m_ChooserSize.width()) + 0.5;
          }
 
 
          // Setup value
          if (y == 0)
          {
-             setValue(0.5);
+             m_value = 0.5;
          }
          else
          {
-             setValue( (y / m_ChooserSize.height()) + 0.5);
+             m_value = (y / m_ChooserSize.height()) + 0.5;
          }
      }
 
+     QColor tmp;
+     tmp.setHsvF(m_Color.hslHueF(), m_saturation, m_value);
+     setColor(tmp);
      indicatorUpdate();
  }
 
@@ -242,7 +208,7 @@ void ColorWheel::drawWheel()
     QPainterPath path;
     QPainter painter(&m_WheelPixmap);
     painter.setRenderHints(QPainter::Antialiasing, true);
-    painter.translate(m_WorldCenter);
+    painter.translate(m_WorldCenter.x, m_WorldCenter.y);
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_WheelGradient);
     path.addEllipse(QPointF(0, 0), m_InnerRadius, m_InnerRadius);
@@ -256,34 +222,36 @@ void ColorWheel::drawWheel()
     painter.drawRect(m_ChooserSize);
 }
 
-void ColorWheel::drawColor()
+void ColorWheel::drawChooser()
 {
-    m_ChooserPixmap = QPixmap(width(), height());
+    m_ChooserPixmap = QPixmap(m_ChooserSize.width(), m_ChooserSize.height());
     m_ChooserPixmap.fill(QColor(0,0,0,0));
 
     QColor pureColor;
-    pureColor.setHsvF(getColor().hueF(), 1.0, 1.0, 1.0);
+    pureColor.setHsvF(m_hue, 1.0, 1.0, 1.0);
 
     m_SaturationGradient.setColorAt(1.0, pureColor);
     m_SaturationGradient.setColorAt(0, Qt::white);
 
     QPainter painter(&m_ChooserPixmap);
     painter.setRenderHints(QPainter::Antialiasing, false);
-    painter.translate(m_WorldCenter);
     painter.setPen(QPen(Qt::black, 1, Qt::NoPen));
     painter.setBrush(m_SaturationGradient);
-    painter.drawRect(m_ChooserSize);
+    painter.drawRect(0, 0, m_ChooserSize.width(), m_ChooserSize.height());
 }
 
 void ColorWheel::drawIndicators()
 {
+    qDebug() << "Variável: " << m_saturation;
+    qDebug() << "Cor:      " << m_Color.saturationF();
+
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing, true);
-    painter.translate(m_WorldCenter);
+    painter.translate(m_WorldCenter.x, m_WorldCenter.y);
 
     // Rotate Indicator
     painter.save();
-    painter.rotate(-getColor().hueF() * 360); // XXXXXXXXXXX arrumar precisão XXXXXXXXXXXXXXXX
+    painter.rotate(-m_hue * 360);
 
 
     // Draw wheel indicator
@@ -303,13 +271,13 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.drawPixmap(0, 0, m_ChooserPixmap);
+    painter.drawPixmap(width()/2 - (m_ChooserSize.width()/2), height()/2 - (m_ChooserSize.height()/2), m_ChooserPixmap);
     painter.drawPixmap(0, 0, m_WheelPixmap);
     drawIndicators();
 }
 
 void ColorWheel::mousePressEvent(QMouseEvent *event)
-{
+{    
     if(event->buttons() != Qt::LeftButton)
     {
         return;
@@ -324,7 +292,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     if(m_WheelHit)
     {
         wheelUpdate();
-        drawColor();
+        drawChooser();
         return;
     }
 
@@ -357,7 +325,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     if(m_WheelHit)
     {
         wheelUpdate();
-        drawColor();
+        drawChooser();
         return;
     }
 
@@ -373,8 +341,8 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     Q_UNUSED(event);
 
     // Move world origin to center of screen
-    m_WorldCenter.setX(width() / 2);
-    m_WorldCenter.setY(height() / 2);
+    m_WorldCenter.x = width() / 2;
+    m_WorldCenter.y = height() / 2;
 
     double side = std::fmin(width(), height()) / 2;
     m_OuterRadius = side - 1.0;
@@ -397,13 +365,13 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_ChooserSize.setTopLeft(QPointF( -diagonal + gap, -diagonal + gap ));
    m_ChooserSize.setBottomRight(QPointF( diagonal - gap, diagonal - gap));
 
-   m_SaturationGradient.setStart(QPointF(-diagonal + gap, 0 ));
-   m_SaturationGradient.setFinalStop(QPointF(diagonal - gap, 0));
+   m_SaturationGradient.setStart(QPointF(0, 0 ));
+   m_SaturationGradient.setFinalStop(QPointF(m_ChooserSize.width(), 0));
 
    m_ValueGradient.setStart(QPointF(0, -diagonal + gap ));
    m_ValueGradient.setFinalStop(QPointF(0, diagonal - gap));
 
    drawWheel();
-   drawColor();
+   drawChooser();
    indicatorUpdate();
 }

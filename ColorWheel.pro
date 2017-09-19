@@ -28,7 +28,7 @@ HEADERS += \
 FORMS += \
         form.ui
 
-QMAKE_CXXFLAGS += -msse4 -msse4.1 -msse4.2
+QMAKE_CXXFLAGS += -msse4.1 -msse4.2
 
 QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_AVX2
 
