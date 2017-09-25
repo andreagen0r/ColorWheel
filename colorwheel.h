@@ -32,9 +32,8 @@ signals:
 
 private:
     void initialize();
-    bool isWheelHit();
-    bool isQuadHit();
-    unsigned char getQuadrant();
+    bool isHitMode();
+    auto getQuadrant();
     double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
     void wheelUpdate();
     void chooserUpdate();
@@ -44,39 +43,42 @@ private:
     void drawChooser();
     void drawIndicators();
 
-    enum Quadrant : unsigned char {
+    enum class Quadrant : unsigned char{
         LEFT_UP = 0,
         RIGHT_UP = 1,
         LEFT_DOWN = 2,
         RIGHT_DOWN = 3
-    };
+    } m_quadHit;
+
+    enum class HitPosition : unsigned char {
+        IDLE = 0,
+        WHEEL = 1,
+        CHOOSER = 2
+    } m_hitMode;
 
     QColor m_Color;
 
-    QConicalGradient m_WheelGradient;
-    QLinearGradient m_SaturationGradient;
-    QLinearGradient m_ValueGradient;
+    QConicalGradient m_wheelGradient;
+    QLinearGradient m_saturationGradient;
+    QLinearGradient m_valueGradient;
 
-    Physis::PhVector3 m_MouseVec;
-    Physis::PhVector3 m_WorldCenter;
+    Physis::PhVector3 m_mouseVec;
 
-    QPointF m_Arrow[3];
-    QPointF m_IndicatorPosition;
+    QPoint m_arrow[3];
+    QPointF m_worldCenter;
+    QPointF m_indicatorPosition;
 
-    bool m_WheelHit;
-    bool m_ChooserHit;
+    QRectF m_chooserSize;
 
-    QRectF m_ChooserSize;
+    double m_innerRadius;
+    double m_outerRadius;
+    double m_indicatorSize;
 
-    double m_hue;
-    double m_saturation;
-    double m_value;
-    double m_InnerRadius;
-    double m_OuterRadius;
-    double m_IndicatorSize;
+    QPixmap m_wheelPixmap;
+    QPixmap m_chooserPixmap;
 
-    QPixmap m_WheelPixmap;
-    QPixmap m_ChooserPixmap;
+    int m_width;
+    int m_height;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
