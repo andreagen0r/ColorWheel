@@ -36,14 +36,13 @@ private:
     auto getQuadrant();
     double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
 
-
     void chooserRefresh();
     void chooserIndicator();
     void wheelRefresh();
 
     void drawWheel();
     void drawColorChooser();
-    void drawIndicators();
+    void drawIndicators(QPainter *painter);
 
     enum class Quadrant : unsigned char{
         LEFT_UP = 0,
@@ -81,6 +80,9 @@ private:
 
     int m_width;
     int m_height;
+
+    bool isChooserRefreshed;
+    bool isColorRefreshed;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
