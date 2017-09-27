@@ -16,11 +16,14 @@ Form::Form(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 
-    ui->widget->setColor(QColor(90, 18, 228));
+//    ui->widget->setColor(QColor(190, 108, 228));
+    ui->widget->setColor(Qt::darkCyan);
 
-    ui->horizontalSlider->setValue(ui->widget->getColor().hslHue());
-    ui->horizontalSlider_2->setValue(ui->widget->getColor().saturation());
-    ui->horizontalSlider_3->setValue(ui->widget->getColor().value());
+    QColor color = ui->widget->getColor();
+
+    ui->horizontalSlider->setValue(color.hue());
+    ui->horizontalSlider_2->setValue(color.saturation());
+    ui->horizontalSlider_3->setValue(color.value());
 }
 
 Form::~Form()

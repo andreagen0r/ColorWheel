@@ -35,12 +35,14 @@ private:
     bool isHitMode();
     auto getQuadrant();
     double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
-    void wheelUpdate();
-    void chooserUpdate();
-    void indicatorUpdate();
+
+
+    void chooserRefresh();
+    void chooserIndicator();
+    void wheelRefresh();
 
     void drawWheel();
-    void drawChooser();
+    void drawColorChooser();
     void drawIndicators();
 
     enum class Quadrant : unsigned char{
