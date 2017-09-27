@@ -41,7 +41,7 @@ private:
     void wheelRefresh();
 
     void drawWheel();
-    void drawColorChooser();
+    void drawColorSelected();
     void drawIndicators(QPainter *painter);
 
     enum class Quadrant : unsigned char{

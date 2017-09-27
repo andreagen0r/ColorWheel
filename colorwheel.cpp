@@ -1,10 +1,5 @@
 #include "colorwheel.h"
 
-
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   DELETAR XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-static int globalCount = 0;
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX   DELETAR XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 ColorWheel::ColorWheel(QWidget *parent)
     : QWidget(parent), m_hitMode(HitPosition::IDLE), m_Color(Qt::red)
 {
@@ -44,7 +39,7 @@ void ColorWheel::setColor(const QColor &in_Color)
 
         if(isColorRefreshed)
         {
-            drawColorChooser();
+            drawColorSelected();
             isColorRefreshed = false;
         }
         update();
@@ -220,7 +215,7 @@ void ColorWheel::drawWheel()
     painter.drawRect(m_chooserSize);
 }
 
-void ColorWheel::drawColorChooser()
+void ColorWheel::drawColorSelected()
 {
     m_chooserPixmap = QPixmap(m_chooserSize.width(), m_chooserSize.height());
     m_chooserPixmap.fill(QColor(0,0,0,0));
@@ -387,5 +382,5 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
 
    drawWheel();
    chooserIndicator();
-   drawColorChooser();
+   drawColorSelected();
 }
