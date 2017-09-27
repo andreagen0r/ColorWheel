@@ -34,11 +34,11 @@ private:
     void initialize();
     bool isHitMode();
     auto getQuadrant();
-    double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
+    double angleAt(const Physis::PhVector3 v1, const Physis::PhVector3 v2);
 
-    void chooserRefresh();
-    void chooserIndicator();
-    void wheelRefresh();
+    QColor colorFromPoint(const Physis::PhVector3 &in_mouseVec);
+    QPointF pointFromColor(const QColor &in_color);
+    QColor colorFromWheel(const Physis::PhVector3 &in_mouseVec);
 
     void drawWheel();
     void drawColorSelected();
