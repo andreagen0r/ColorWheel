@@ -37,7 +37,9 @@ private:
     double angleAt(const Physis::PhVector3 v1, const Physis::PhVector3 v2);
 
     QColor colorFromPoint(const Physis::PhVector3 &in_mouseVec);
+
     QPointF pointFromColor(const QColor &in_color);
+
     QColor colorFromWheel(const Physis::PhVector3 &in_mouseVec);
 
     void drawWheel();

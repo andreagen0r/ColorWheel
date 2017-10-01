@@ -161,34 +161,13 @@ QColor ColorWheel::colorFromPoint(const Physis::PhVector3 &in_mouseVec)
 
     QColor color;
     color.setHsvF(m_Color.hsvHueF(), m_sat, m_val);
-//    setColor(color);
     return color;
 }
 
 QPointF ColorWheel::pointFromColor(const QColor &in_color)
 {
-    double x;
-    double y;
-
-    if(in_color.hsvSaturationF() == 0.5)
-    {
-        x = 0;
-    }
-    else
-    {
-        x = in_color.saturationF() * m_chooserSize.width() - (m_chooserSize.width() / 2);
-    }
-
-    if(in_color.valueF() == 0.5)
-    {
-        y = 0;
-    }
-    else
-    {
-        y = -(in_color.valueF() * m_chooserSize.height() - (m_chooserSize.height() / 2));
-    }
-
-    return QPointF(x,y);
+    return QPointF(m_chooserSize.width() * (in_color.saturationF() - 0.5),
+                   -m_chooserSize.height() * (in_color.valueF() - 0.5));
 }
 
 QColor ColorWheel::colorFromWheel(const Physis::PhVector3 &in_mouseVec)
@@ -196,7 +175,8 @@ QColor ColorWheel::colorFromWheel(const Physis::PhVector3 &in_mouseVec)
     double m_hue = angleAt(in_mouseVec.normalize(), Physis::PhVector3(1.0, 0.0, 0.0).normalize()) / 360;
     QColor color;
     color.setHsvF(m_hue, m_Color.hsvSaturationF(), m_Color.valueF());
-//    setColor(color);
+    qDebug() << "Dentro de colorFromWheel: " << color.hsvHueF();
+    qDebug() << "Dentro de colorFromWheel variavel: " << m_Color.hsvHueF();
     return color;
 }
 
@@ -249,6 +229,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
     // Rotate Indicator
     painter->save();
     painter->rotate(-m_Color.hsvHueF() * 360.0);
+    qDebug() << "Após rotate: " << m_Color.hsvHueF(); //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // Draw wheel indicator
     painter->setBrush(Qt::black);
@@ -258,6 +239,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
 
     // Draw chooser indicator
     QPointF indicatorPosition = pointFromColor(m_Color);
+
     painter->drawEllipse(indicatorPosition, m_indicatorSize, m_indicatorSize);
     painter->setBrush(m_Color);
     painter->setPen(QPen(Qt::white, 1, Qt::SolidLine));
@@ -316,35 +298,35 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons() != Qt::LeftButton)
-    {
-        return;
-    }
+//    if(event->buttons() != Qt::LeftButton)
+//    {
+//        return;
+//    }
 
-    if(m_hitMode == HitPosition::IDLE)
-    {
-        return;
-    }
+//    if(m_hitMode == HitPosition::IDLE)
+//    {
+//        return;
+//    }
 
-    m_mouseVec.x = event->x() - m_width / 2;
-    m_mouseVec.y = event->y() - m_height / 2;
+//    m_mouseVec.x = event->x() - m_width / 2;
+//    m_mouseVec.y = event->y() - m_height / 2;
 
-    switch (m_hitMode)
-    {
-        case HitPosition::WHEEL:
-        {
-            setColor(colorFromWheel(m_mouseVec));
-            break;
-        }
-        case HitPosition::CHOOSER:
-        {
-            isChooserRefreshed = true;
-            setColor(colorFromPoint(m_mouseVec));
-            break;
-        }
-        default:
-        {} break;
-    }
+//    switch (m_hitMode)
+//    {
+//        case HitPosition::WHEEL:
+//        {
+//            setColor(colorFromWheel(m_mouseVec));
+//            break;
+//        }
+//        case HitPosition::CHOOSER:
+//        {
+//            isChooserRefreshed = true;
+//            setColor(colorFromPoint(m_mouseVec));
+//            break;
+//        }
+//        default:
+//        {} break;
+//    }
 }
 
 void ColorWheel::resizeEvent(QResizeEvent *event)
