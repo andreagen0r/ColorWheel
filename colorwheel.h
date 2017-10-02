@@ -34,13 +34,10 @@ private:
     void initialize();
     bool isHitMode();
     auto getQuadrant();
-    double angleAt(const Physis::PhVector3 v1, const Physis::PhVector3 v2);
 
-    QColor colorFromPoint(const Physis::PhVector3 &in_mouseVec);
-
-    QPointF pointFromColor(const QColor &in_color);
-
-    QColor colorFromWheel(const Physis::PhVector3 &in_mouseVec);
+    QColor saturationValueAt(const Physis::PhVector3 &in_mouseVec);
+    QPointF saturationValueFromColor(const QColor &in_color);
+    QColor hueAt(const Physis::PhVector3 &in_mouseVec);
 
     void drawWheel();
     void drawColorSelected();
@@ -83,8 +80,8 @@ private:
     int m_width;
     int m_height;
 
-    bool isChooserRefreshed;
-    bool isColorRefreshed;
+    bool isHueChanged;
+    bool myColorChanged;
 
 protected:
     void paintEvent(QPaintEvent *event) override;

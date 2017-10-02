@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-namespace physis
+namespace Physis
 {
 namespace math
 {

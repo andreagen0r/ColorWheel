@@ -24,30 +24,29 @@ QColor ColorWheel::getColor() const
 
 void ColorWheel::setColor(const QColor &in_Color)
 {
-    if(in_Color != m_Color)
+    if(in_Color == m_Color)
     {
-        isChooserRefreshed = (m_Color.hsvSaturationF() != in_Color.hsvSaturationF() || m_Color.valueF() != in_Color.valueF());
-        isColorRefreshed = (m_Color.hsvHueF() != in_Color.hsvHueF());
-
-        m_Color = in_Color;
-        emit colorChanged(m_Color);
-        if(isChooserRefreshed)
-        {
-            pointFromColor(m_Color);
-            isChooserRefreshed = false;
-        }
-
-        if(isColorRefreshed)
-        {
-            drawColorSelected();
-            isColorRefreshed = false;
-        }
-        update();
+        return;
     }
+
+    isHueChanged = (m_Color.hsvHueF() != in_Color.hsvHueF());
+
+    m_Color = in_Color;
+    emit colorChanged(m_Color);
+
+    if(isHueChanged)
+    {
+        drawColorSelected();
+        isHueChanged = false;
+    }
+
+    update();
 }
 
 void ColorWheel::initialize()
 {    
+    setFocusPolicy(Qt::StrongFocus);
+
     // Wheel gradient
     m_wheelGradient.setAngle(0.0);
     m_wheelGradient.setCenter(QPointF(0.0, 0.0));
@@ -109,51 +108,32 @@ auto ColorWheel::getQuadrant()
     }
 }
 
-double ColorWheel::angleAt(const Physis::PhVector3 in_vec1, Physis::PhVector3 in_vec2)
+QColor ColorWheel::saturationValueAt(const Physis::PhVector3 &in_mouseVec)
 {
-    double angle = physis::math::radiansToDegrees(std::acos(in_vec1.dot(in_vec2) / (in_vec1.length() * in_vec2.length())));
+    double x = in_mouseVec.x;
+    double y = -in_mouseVec.y;;
 
-    m_quadHit = getQuadrant();
+    if(!m_chooserSize.contains(in_mouseVec.x, in_mouseVec.y))
+    {
+        // Test Saturation X axis
+        if(in_mouseVec.x <= m_chooserSize.left())
+        {
+            x = m_chooserSize.left();
+        }
+        else if (in_mouseVec.x >= m_chooserSize.right())
+        {
+            x = m_chooserSize.right();
+        }
 
-    if(m_quadHit == Quadrant::LEFT_DOWN || m_quadHit == Quadrant::RIGHT_DOWN)
-    {
-        return angle = 360 - angle;
-    }
-
-    return angle;
-}
-
-QColor ColorWheel::colorFromPoint(const Physis::PhVector3 &in_mouseVec)
-{
-    double x;
-    double y;
-
-    // Test Saturation X axis
-    if(in_mouseVec.x <= m_chooserSize.left())
-    {
-        x = m_chooserSize.left();
-    }
-    else if (in_mouseVec.x >= m_chooserSize.right())
-    {
-        x = m_chooserSize.right();
-    }
-    else
-    {
-        x = in_mouseVec.x;
-    }
-
-    // Test Value Y axis
-    if(in_mouseVec.y <= m_chooserSize.top())
-    {
-        y = -m_chooserSize.top();
-    }
-    else if (in_mouseVec.y >= m_chooserSize.bottom())
-    {
-        y = -m_chooserSize.bottom();
-    }
-    else
-    {
-        y = -in_mouseVec.y;
+        // Test Value Y axis
+        if(in_mouseVec.y <= m_chooserSize.top())
+        {
+            y = -m_chooserSize.top();
+        }
+        else if (in_mouseVec.y >= m_chooserSize.bottom())
+        {
+            y = -m_chooserSize.bottom();
+        }
     }
 
     double m_sat = (x / m_chooserSize.width()) + 0.5;
@@ -164,19 +144,27 @@ QColor ColorWheel::colorFromPoint(const Physis::PhVector3 &in_mouseVec)
     return color;
 }
 
-QPointF ColorWheel::pointFromColor(const QColor &in_color)
+QPointF ColorWheel::saturationValueFromColor(const QColor &in_color)
 {
     return QPointF(m_chooserSize.width() * (in_color.saturationF() - 0.5),
                    -m_chooserSize.height() * (in_color.valueF() - 0.5));
 }
 
-QColor ColorWheel::colorFromWheel(const Physis::PhVector3 &in_mouseVec)
+QColor ColorWheel::hueAt(const Physis::PhVector3 &in_mouseVec)
 {
-    double m_hue = angleAt(in_mouseVec.normalize(), Physis::PhVector3(1.0, 0.0, 0.0).normalize()) / 360;
+    using namespace Physis;
+    PhVector3 vec(1.0, 0.0, 0.0);
+    double angle = math::radiansToDegrees(std::acos(in_mouseVec.dot(vec) / (in_mouseVec.length() * vec.length())));
+
+    m_quadHit = getQuadrant();
+
+    if(m_quadHit == Quadrant::LEFT_DOWN || m_quadHit == Quadrant::RIGHT_DOWN)
+    {
+        angle = 360 - angle;
+    }
+
     QColor color;
-    color.setHsvF(m_hue, m_Color.hsvSaturationF(), m_Color.valueF());
-    qDebug() << "Dentro de colorFromWheel: " << color.hsvHueF();
-    qDebug() << "Dentro de colorFromWheel variavel: " << m_Color.hsvHueF();
+    color.setHsvF(angle / 360, m_Color.hsvSaturationF(), m_Color.valueF());
     return color;
 }
 
@@ -218,7 +206,6 @@ void ColorWheel::drawColorSelected()
     p.setPen(QPen(Qt::black, 1, Qt::NoPen));
     p.setBrush(m_saturationGradient);
     p.drawRect(0, 0, m_chooserSize.width(), m_chooserSize.height());
-    isChooserRefreshed = false;
 }
 
 void ColorWheel::drawIndicators(QPainter *painter)
@@ -228,8 +215,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
 
     // Rotate Indicator
     painter->save();
-    painter->rotate(-m_Color.hsvHueF() * 360.0);
-    qDebug() << "Após rotate: " << m_Color.hsvHueF(); //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    painter->rotate(-m_Color.hsvHue());
 
     // Draw wheel indicator
     painter->setBrush(Qt::black);
@@ -238,7 +224,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
     painter->restore();
 
     // Draw chooser indicator
-    QPointF indicatorPosition = pointFromColor(m_Color);
+    QPointF indicatorPosition = saturationValueFromColor(m_Color);
 
     painter->drawEllipse(indicatorPosition, m_indicatorSize, m_indicatorSize);
     painter->setBrush(m_Color);
@@ -274,13 +260,12 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     {
         case HitPosition::WHEEL:
         {
-            setColor(colorFromWheel(m_mouseVec));
+            setColor(hueAt(m_mouseVec));
             break;
         }
         case HitPosition::CHOOSER:
         {
-            isChooserRefreshed = true;
-            setColor(colorFromPoint(m_mouseVec));
+            setColor(saturationValueAt(m_mouseVec));
             setCursor(Qt::BlankCursor);
             break;
         }
@@ -298,35 +283,34 @@ void ColorWheel::mouseReleaseEvent(QMouseEvent *event)
 
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
-//    if(event->buttons() != Qt::LeftButton)
-//    {
-//        return;
-//    }
+    if(event->buttons() != Qt::LeftButton)
+    {
+        return;
+    }
 
-//    if(m_hitMode == HitPosition::IDLE)
-//    {
-//        return;
-//    }
+    if(m_hitMode == HitPosition::IDLE)
+    {
+        return;
+    }
 
-//    m_mouseVec.x = event->x() - m_width / 2;
-//    m_mouseVec.y = event->y() - m_height / 2;
+    m_mouseVec.x = event->x() - m_width / 2;
+    m_mouseVec.y = event->y() - m_height / 2;
 
-//    switch (m_hitMode)
-//    {
-//        case HitPosition::WHEEL:
-//        {
-//            setColor(colorFromWheel(m_mouseVec));
-//            break;
-//        }
-//        case HitPosition::CHOOSER:
-//        {
-//            isChooserRefreshed = true;
-//            setColor(colorFromPoint(m_mouseVec));
-//            break;
-//        }
-//        default:
-//        {} break;
-//    }
+    switch (m_hitMode)
+    {
+        case HitPosition::WHEEL:
+        {
+            setColor(hueAt(m_mouseVec));
+            break;
+        }
+        case HitPosition::CHOOSER:
+        {
+            setColor(saturationValueAt(m_mouseVec));
+            break;
+        }
+        default:
+        {} break;
+    }
 }
 
 void ColorWheel::resizeEvent(QResizeEvent *event)
@@ -350,7 +334,7 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_arrow [2] = QPoint(m_innerRadius, -3 * (side * 0.01));
 
    // Calculate the size for sampler color
-   double diagonal = std::cos(physis::math::degreeToRadians(45.0)) * m_innerRadius;
+   double diagonal = std::cos(Physis::math::degreeToRadians(45.0)) * m_innerRadius;
    double gap = (diagonal * 0.05);
 
    // Calculate chooser indicator size
@@ -371,6 +355,6 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_valueGradient.setFinalStop(QPointF(0, diagonal - gap));
 
    drawWheel();
-   pointFromColor(m_Color);
+   saturationValueFromColor(m_Color);
    drawColorSelected();
 }
