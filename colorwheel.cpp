@@ -191,7 +191,7 @@ void ColorWheel::drawWheel()
 }
 
 void ColorWheel::drawColorSelected()
-{
+{    
     m_chooserPixmap = QPixmap(m_chooserSize.width(), m_chooserSize.height());
     m_chooserPixmap.fill(QColor(0,0,0,0));
 
