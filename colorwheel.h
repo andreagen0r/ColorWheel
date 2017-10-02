@@ -81,7 +81,6 @@ private:
     int m_height;
 
     bool isHueChanged;
-    bool myColorChanged;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
