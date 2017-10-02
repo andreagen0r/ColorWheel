@@ -22,62 +22,66 @@ public:
     explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
     ~ColorWheel();
 
-public slots:
     QColor getColor() const;
+
+public slots:
     void setColor(const QColor &in_Color);
-    void setColor(const double in_Hue, const double in_Saturation, const double in_Value, const double in_Alpha = 1.0);
-    void setHue(const double in_Hue);
-    void setSaturation(const double in_Saturation);
-    void setValue(const double in_Value);
-    void setAlpha(const double in_Alpha);
 
 signals:
     void colorChanged(QColor inValue);
 
 private:
     void initialize();
-    bool isWheelHit();
-    bool isQuadHit();
-    unsigned char getQuadrant();
-    double angleAt(Physis::PhVector3 v1, Physis::PhVector3 v2);
-    void wheelUpdate();
-    void chooserUpdate();
-    void indicatorUpdate();
+    bool isHitMode();
+    auto getQuadrant();
+
+    QColor saturationValueAt(const Physis::PhVector3 &in_mouseVec);
+    QPointF saturationValueFromColor(const QColor &in_color);
+    QColor hueAt(const Physis::PhVector3 &in_mouseVec);
 
     void drawWheel();
-    void drawColor();
-    void drawIndicators();
+    void drawColorSelected();
+    void drawIndicators(QPainter *painter);
 
-    enum Quadrant : unsigned char {
+    enum class Quadrant : unsigned char{
         LEFT_UP = 0,
         RIGHT_UP = 1,
         LEFT_DOWN = 2,
         RIGHT_DOWN = 3
-    };
+    } m_quadHit;
+
+    enum class HitPosition : unsigned char {
+        IDLE = 0,
+        WHEEL = 1,
+        CHOOSER = 2
+    } m_hitMode;
 
     QColor m_Color;
 
-    QConicalGradient m_WheelGradient;
-    QLinearGradient m_SaturationGradient;
-    QLinearGradient m_ValueGradient;
+    QConicalGradient m_wheelGradient;
+    QLinearGradient m_saturationGradient;
+    QLinearGradient m_valueGradient;
 
-    Physis::PhVector3 m_MouseVec;
+    Physis::PhVector3 m_mouseVec;
 
-    QPointF m_Arrow[3];
-    QPointF m_WorldCenter;
-    QPointF m_IndicatorPosition;
+    QPoint m_arrow[3];
+    QPointF m_worldCenter;
+    QPointF m_indicatorPosition;
 
-    bool m_WheelHit;
-    bool m_ChooserHit;
+    QRectF m_chooserSize;
 
-    QRectF m_ChooserSize;
+    double m_innerRadius;
+    double m_outerRadius;
+    double m_indicatorSize;
 
-    double m_InnerRadius;
-    double m_OuterRadius;
-    double m_IndicatorSize;
+    QPixmap m_wheelPixmap;
+    QPixmap m_chooserPixmap;
 
-    QPixmap m_WheelPixmap;
-    QPixmap m_ChooserPixmap;
+    int m_width;
+    int m_height;
+
+    bool isHueChanged;
+    bool myColorChanged;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
