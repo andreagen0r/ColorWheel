@@ -24,11 +24,9 @@ Form::~Form()
 
 void Form::cor(const QColor &inCor)
 {
-    connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
     ui->horizontalSlider->setValue(inCor.hue());
     ui->horizontalSlider_2->setValue(inCor.saturation());
     ui->horizontalSlider_3->setValue(inCor.value());
-    disconnect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
 }
 
 void Form::on_horizontalSlider_valueChanged(int value)
