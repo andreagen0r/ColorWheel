@@ -36,8 +36,6 @@ private slots:
 
 private:
     Ui::Form *ui;
-
-    QColor m_color;
 };
 
 #endif // FORM_H
