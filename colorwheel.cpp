@@ -165,6 +165,7 @@ QColor ColorWheel::hueAt(const Physis::PhVector3 &in_mouseVec)
 
     QColor color;
     color.setHsvF(angle / 360, m_Color.hsvSaturationF(), m_Color.valueF());
+
     return color;
 }
 

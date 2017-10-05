@@ -10,6 +10,9 @@
 #include <QPixmap>
 #include <QDebug>
 
+#include <cmath>
+#include <cstdint>
+
 #include "phmath.h"
 #include "phvector3.h"
 
@@ -43,18 +46,21 @@ private:
     void drawColorSelected();
     void drawIndicators(QPainter *painter);
 
-    enum class Quadrant : unsigned char{
+    enum class Quadrant : int_fast8_t{
         LEFT_UP = 0,
         RIGHT_UP = 1,
         LEFT_DOWN = 2,
         RIGHT_DOWN = 3
-    } m_quadHit;
+    };
 
-    enum class HitPosition : unsigned char {
+    enum class HitPosition :int_fast8_t{
         IDLE = 0,
         WHEEL = 1,
         CHOOSER = 2
-    } m_hitMode;
+    };
+
+    Quadrant m_quadHit;
+    HitPosition m_hitMode;
 
     QColor m_Color;
 
