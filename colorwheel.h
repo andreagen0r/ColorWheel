@@ -34,7 +34,6 @@ signals:
     void colorChanged(QColor inValue);
 
 private:
-    void initialize();
     bool isHitMode();
     auto getQuadrant();
 
