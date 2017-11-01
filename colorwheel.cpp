@@ -1,15 +1,31 @@
 #include "colorwheel.h"
 
 ColorWheel::ColorWheel(QWidget *parent)
-    : QWidget(parent), m_hitMode(HitPosition::IDLE), m_Color(Qt::red)
+    : ColorWheel(Qt::red, parent)
 {
-    initialize();
 }
 
 ColorWheel::ColorWheel(const QColor in_Color, QWidget *parent)
-    : QWidget(parent), m_hitMode(HitPosition::IDLE), m_Color(in_Color)
+    : QWidget(parent),
+      m_hitMode(HitPosition::IDLE),
+      m_Color(in_Color)
 {
-    initialize();
+    setFocusPolicy(Qt::StrongFocus);
+
+    // Wheel gradient
+    m_wheelGradient.setAngle(0.0);
+    m_wheelGradient.setCenter(QPointF(0.0, 0.0));
+    m_wheelGradient.setColorAt(0.0, Qt::red);
+    m_wheelGradient.setColorAt(60.0 /360.0, Qt::yellow);
+    m_wheelGradient.setColorAt(120.0 /360.0, Qt::green);
+    m_wheelGradient.setColorAt(180.0 /360.0, Qt::cyan);
+    m_wheelGradient.setColorAt(240.0 /360.0, Qt::blue);
+    m_wheelGradient.setColorAt(300.0 /360.0, Qt::magenta);
+    m_wheelGradient.setColorAt(1.0, Qt::red);
+
+    // Sampler gradient
+    m_valueGradient.setColorAt(0.0, Qt::transparent);
+    m_valueGradient.setColorAt(1.0, Qt::black);
 }
 
 ColorWheel::~ColorWheel()
@@ -41,26 +57,6 @@ void ColorWheel::setColor(const QColor &in_Color)
     }
 
     update();
-}
-
-void ColorWheel::initialize()
-{    
-    setFocusPolicy(Qt::StrongFocus);
-
-    // Wheel gradient
-    m_wheelGradient.setAngle(0.0);
-    m_wheelGradient.setCenter(QPointF(0.0, 0.0));
-    m_wheelGradient.setColorAt(0.0, Qt::red);
-    m_wheelGradient.setColorAt(60.0 /360.0, Qt::yellow);
-    m_wheelGradient.setColorAt(120.0 /360.0, Qt::green);
-    m_wheelGradient.setColorAt(180.0 /360.0, Qt::cyan);
-    m_wheelGradient.setColorAt(240.0 /360.0, Qt::blue);
-    m_wheelGradient.setColorAt(300.0 /360.0, Qt::magenta);
-    m_wheelGradient.setColorAt(1.0, Qt::red);
-
-    // Sampler gradient
-    m_valueGradient.setColorAt(0.0, Qt::transparent);
-    m_valueGradient.setColorAt(1.0, Qt::black);
 }
 
 bool ColorWheel::isHitMode()
