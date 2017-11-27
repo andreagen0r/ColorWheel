@@ -12,18 +12,13 @@ CONFIG += c++14
 SOURCES += \
         main.cpp \
         colorwheel.cpp \
-        form.cpp \
-        phvector3.cpp \
-        phmath.cpp \
-    abstractcolorchooser.cpp
+        form.cpp
 
 HEADERS += \
         colorwheel.h \
         form.h \
         phvector3.h \
-        phmath.h \
-    abstractcolorchooser.h \
-    phvector3x.h
+        phmath.h
 
 FORMS += \
         form.ui
