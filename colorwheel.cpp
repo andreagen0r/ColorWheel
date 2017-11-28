@@ -1,4 +1,13 @@
 #include "colorwheel.h"
+#include "nkMath.h"
+
+#include <QColor>
+#include <QGradient>
+#include <QPixmap>
+#include <QPainter>
+#include <QMouseEvent>
+#include <QPainterPath>
+#include <cmath>
 
 ColorWheel::ColorWheel(QWidget *parent)
     : ColorWheel(Qt::red, parent)
@@ -104,7 +113,7 @@ auto ColorWheel::getQuadrant()
     }
 }
 
-QColor ColorWheel::saturationValueAt(const Physis::PhVector3 &in_mouseVec)
+QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
 {
     double x = in_mouseVec.x;
     double y = -in_mouseVec.y;;
@@ -146,11 +155,10 @@ QPointF ColorWheel::saturationValueFromColor(const QColor &in_color)
                    -m_chooserSize.height() * (in_color.valueF() - 0.5));
 }
 
-QColor ColorWheel::hueAt(const Physis::PhVector3 &in_mouseVec)
+QColor ColorWheel::hueAt(const nkn::NknVector3 &in_mouseVec)
 {
-    using namespace Physis;
-    PhVector3 vec(1.0, 0.0, 0.0);
-    double angle = math::radiansToDegrees(std::acos(in_mouseVec.dot(vec) / (in_mouseVec.length() * vec.length())));
+    nkn::NknVector3 vec(1.0, 0.0, 0.0);
+    double angle = nkn::math::radiansToDegrees(std::acos(in_mouseVec.dot(vec) / (in_mouseVec.length() * vec.length())));
 
     m_quadHit = getQuadrant();
 
@@ -331,7 +339,7 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_arrow [2] = QPoint(m_innerRadius, -3 * (side * 0.01));
 
    // Calculate the size for sampler color
-   double diagonal = std::cos(Physis::math::degreeToRadians(45.0)) * m_innerRadius;
+   double diagonal = std::cos(nkn::math::degreeToRadians(45.0)) * m_innerRadius;
    double gap = (diagonal * 0.05);
 
    // Calculate chooser indicator size

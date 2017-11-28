@@ -17,8 +17,8 @@ SOURCES += \
 HEADERS += \
         colorwheel.h \
         form.h \
-        phvector3.h \
-        phmath.h
+    nkVector3.h \
+    nkMath.h
 
 FORMS += \
         form.ui

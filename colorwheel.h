@@ -2,19 +2,7 @@
 #define COLORWHEEL_H
 
 #include <QWidget>
-#include <QColor>
-#include <QGradient>
-#include <QPainter>
-#include <QPainterPath>
-#include <QMouseEvent>
-#include <QPixmap>
-#include <QDebug>
-
-#include <cmath>
-#include <cstdint>
-
-#include "phmath.h"
-#include "phvector3.h"
+#include "nkVector3.h"
 
 class ColorWheel : public QWidget
 {
@@ -37,9 +25,9 @@ private:
     bool isHitMode();
     auto getQuadrant();
 
-    QColor saturationValueAt(const Physis::PhVector3 &in_mouseVec);
+    QColor saturationValueAt(const nkn::NknVector3 &in_mouseVec);
     QPointF saturationValueFromColor(const QColor &in_color);
-    QColor hueAt(const Physis::PhVector3 &in_mouseVec);
+    QColor hueAt(const nkn::NknVector3 &in_mouseVec);
 
     void drawWheel();
     void drawColorSelected();
@@ -67,7 +55,7 @@ private:
     QLinearGradient m_saturationGradient;
     QLinearGradient m_valueGradient;
 
-    Physis::PhVector3 m_mouseVec;
+    nkn::NknVector3 m_mouseVec;
 
     QPoint m_arrow[3];
     QPointF m_worldCenter;

@@ -1,7 +1,7 @@
-#ifndef PHMATH_H
-#define PHMATH_H
+#ifndef NKMATH_H
+#define NKMATH_H
 
-namespace Physis
+namespace nkn
 {
 namespace math
 {
@@ -30,4 +30,4 @@ constexpr inline T radiansToDegrees(const T angle)
 } // END NAMESPACE MATH
 } // END NAMESPACE PHYSIS
 
-#endif // PHMATH_H
+#endif // NKMATH_H
