@@ -40,7 +40,7 @@ private:
         RIGHT_DOWN = 3
     };
 
-    enum class HitPosition :int_fast8_t{
+    enum class HitPosition : int_fast8_t{
         IDLE = 0,
         WHEEL = 1,
         CHOOSER = 2
