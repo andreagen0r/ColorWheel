@@ -14,16 +14,25 @@ ColorWheel::ColorWheel(QWidget *parent)
 {
 }
 
-ColorWheel::ColorWheel(const QColor &in_Color, QWidget *parent)
+ColorWheel::ColorWheel(const QColor in_Color, QWidget *parent)
     : QWidget(parent),
+      m_quadHit(UpDown::UP),
       m_hitMode(HitPosition::IDLE),
-      m_Color(in_Color)
+      m_Color(in_Color),
+      m_innerRadius(0),
+      m_outerRadius(0),
+      m_indicatorSize(0),
+      m_width(0),
+      m_height(0),
+      isHueChanged(false)
 {
     setFocusPolicy(Qt::StrongFocus);
 
+    setMouseTracking(true);
+
     // Wheel gradient
     m_wheelGradient.setAngle(0.0);
-    m_wheelGradient.setCenter(QPointF(0.0, 0.0));
+    m_wheelGradient.setCenter(m_pointZero);
     m_wheelGradient.setColorAt(0.0, Qt::red);
     m_wheelGradient.setColorAt(60.0 /360.0, Qt::yellow);
     m_wheelGradient.setColorAt(120.0 /360.0, Qt::green);
@@ -46,10 +55,11 @@ void ColorWheel::setColor(const QColor &in_Color)
 {
     if(in_Color == m_Color)
     {
+        isHueChanged = false;
         return;
     }
 
-    isHueChanged = (m_Color.hsvHueF() != in_Color.hsvHueF());
+    isHueChanged = true;
 
     m_Color = in_Color;
     emit colorChanged(m_Color);
@@ -80,38 +90,26 @@ bool ColorWheel::isHitMode()
     return false;
 }
 
-auto ColorWheel::getQuadrant()
+ColorWheel::UpDown ColorWheel::getQuadrant(const QPoint &position)
 {
-    QPoint mousePosition(mapFromGlobal(QCursor::pos()));
+    UpDown output;
 
-    if(mousePosition.x() <= m_width/2)
+    if(position.y() <= static_cast<int>(m_height/2))
     {
-        if(mousePosition.y() <= m_height/2)
-        {
-            return Quadrant::LEFT_UP;
-        }
-        else
-        {
-           return Quadrant::LEFT_DOWN;
-        }
+        output = UpDown::UP;
     }
     else
     {
-        if(mousePosition.y() <= m_height/2)
-        {
-            return Quadrant::RIGHT_UP;
-        }
-        else
-        {
-            return Quadrant::RIGHT_DOWN;
-        }
+        output = UpDown::DOWN;
     }
+
+    return output;
 }
 
 QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
 {
-    double x = in_mouseVec.x;
-    double y = -in_mouseVec.y;
+    double x{static_cast<double>(in_mouseVec.x)};
+    double y{static_cast<double>(-in_mouseVec.y)};
 
     if(!m_chooserSize.contains(in_mouseVec.x, in_mouseVec.y))
     {
@@ -136,8 +134,8 @@ QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
         }
     }
 
-    double m_sat = (x / m_chooserSize.width()) + 0.5;
-    double m_val = (y / m_chooserSize.height()) + 0.5;
+    float m_sat = (x / m_chooserSize.width()) + 0.5;
+    float m_val = (y / m_chooserSize.height()) + 0.5;
 
     QColor color;
     color.setHsvF(m_Color.hsvHueF(), m_sat, m_val);
@@ -155,9 +153,9 @@ QColor ColorWheel::hueAt(const nkn::NknVector3 &in_mouseVec)
     nkn::NknVector3 vec(1.0, 0.0, 0.0);
     double angle = nkn::math::radiansToDegrees(std::acos(in_mouseVec.dot(vec) / (in_mouseVec.length() * vec.length())));
 
-    m_quadHit = getQuadrant();
+    m_quadHit = getQuadrant(mapFromGlobal(QCursor::pos()));
 
-    if(m_quadHit == Quadrant::LEFT_DOWN || m_quadHit == Quadrant::RIGHT_DOWN)
+    if(m_quadHit == UpDown::DOWN)
     {
         angle = 360 - angle;
     }
@@ -179,8 +177,8 @@ void ColorWheel::drawWheel()
     painter.translate(m_worldCenter.x(), m_worldCenter.y());
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_wheelGradient);
-    path.addEllipse(QPointF(0, 0), m_innerRadius, m_innerRadius);
-    path.addEllipse(QPointF(0, 0), m_outerRadius, m_outerRadius);
+    path.addEllipse(m_pointZero, m_innerRadius, m_innerRadius);
+    path.addEllipse(m_pointZero, m_outerRadius, m_outerRadius);
     painter.drawPath(path);
 
     // Draw chooser foreground
@@ -192,7 +190,7 @@ void ColorWheel::drawWheel()
 
 void ColorWheel::drawColorSelected()
 {
-    m_chooserPixmap = QPixmap(m_chooserSize.width(), m_chooserSize.height());
+    m_chooserPixmap = QPixmap(static_cast<int>(m_chooserSize.width()), static_cast<int>(m_chooserSize.height()));
     m_chooserPixmap.fill(QColor(0,0,0,0));
 
     QColor pureColor;
@@ -205,7 +203,7 @@ void ColorWheel::drawColorSelected()
     p.setRenderHints(QPainter::Antialiasing, false);
     p.setPen(QPen(Qt::black, 1, Qt::NoPen));
     p.setBrush(m_saturationGradient);
-    p.drawRect(0, 0, m_chooserSize.width(), m_chooserSize.height());
+    p.drawRect(QRectF(m_pointZero, QSizeF(m_chooserSize.width(), m_chooserSize.height())));
 }
 
 void ColorWheel::drawIndicators(QPainter *painter)
@@ -236,8 +234,11 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.drawPixmap(m_width/2 - (m_chooserSize.width()/2), m_height/2 - (m_chooserSize.height()/2), m_chooserPixmap);
-    painter.drawPixmap(0, 0, m_wheelPixmap);
+    painter.drawPixmap(static_cast<int>(m_width/2 - (m_chooserSize.width()/2)),
+                       static_cast<int>(m_height/2 - (m_chooserSize.height()/2)),
+                       m_chooserPixmap);
+
+    painter.drawPixmap(m_pointZero, m_wheelPixmap);
     drawIndicators(&painter);
 }
 
@@ -321,17 +322,17 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     m_height = height();
 
     // Move world origin to center of screen
-    m_worldCenter.setX(m_width / 2);
-    m_worldCenter.setY(m_height / 2);
+    m_worldCenter.setX(static_cast<int>(m_width / 2));
+    m_worldCenter.setY(static_cast<int>(m_height / 2));
 
     double side = std::fmin(width(), height()) / 2;
     m_outerRadius = side - 1.0;
     m_innerRadius = side - (side * 0.25);
 
     // Make the arrow points relative to widget size
-   m_arrow [0] = QPoint(m_innerRadius, 3 * (side * 0.01));
-   m_arrow [1] = QPoint(m_innerRadius + 6 * (side * 0.01), 0);
-   m_arrow [2] = QPoint(m_innerRadius, -3 * (side * 0.01));
+   m_arrow [0] = QPointF(m_innerRadius, 3 * (side * 0.01));
+   m_arrow [1] = QPointF(m_innerRadius + 6 * (side * 0.01), 0);
+   m_arrow [2] = QPointF(m_innerRadius, -3 * (side * 0.01));
 
    // Calculate the size for sampler color
    double diagonal = std::cos(nkn::math::degreeToRadians(45.0)) * m_innerRadius;
@@ -345,13 +346,13 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    }
 
    // Setup the rect size for color sampler
-   m_chooserSize.setTopLeft(QPointF( -diagonal + gap, -diagonal + gap ));
+   m_chooserSize.setTopLeft(QPointF( -diagonal + gap, -diagonal + gap));
    m_chooserSize.setBottomRight(QPointF( diagonal - gap, diagonal - gap));
 
-   m_saturationGradient.setStart(QPointF(0, 0 ));
+   m_saturationGradient.setStart(m_pointZero);
    m_saturationGradient.setFinalStop(QPointF(m_chooserSize.width(), 0));
 
-   m_valueGradient.setStart(QPointF(0, -diagonal + gap ));
+   m_valueGradient.setStart(QPointF(0, -diagonal + gap));
    m_valueGradient.setFinalStop(QPointF(0, diagonal - gap));
 
    drawWheel();

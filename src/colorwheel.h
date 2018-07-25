@@ -10,7 +10,7 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(const QColor &in_Color, QWidget *parent = 0);
+    explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
 
     QColor getColor() const;
 
@@ -18,11 +18,10 @@ public slots:
     void setColor(const QColor &in_Color);
 
 signals:
-    void colorChanged(QColor inValue);
+    void colorChanged(QColor color);
 
 private:
     bool isHitMode();
-    auto getQuadrant();
 
     QColor saturationValueAt(const nkn::NknVector3 &in_mouseVec);
     QPointF saturationValueFromColor(const QColor &in_color);
@@ -32,12 +31,12 @@ private:
     void drawColorSelected();
     void drawIndicators(QPainter *painter);
 
-    enum class Quadrant : int_fast8_t{
-        LEFT_UP = 0,
-        RIGHT_UP = 1,
-        LEFT_DOWN = 2,
-        RIGHT_DOWN = 3
+    enum class UpDown : int_fast8_t{
+        UP = 0,
+        DOWN = 1
     };
+
+    UpDown getQuadrant(const QPoint &position);
 
     enum class HitPosition : int_fast8_t{
         IDLE = 0,
@@ -45,7 +44,7 @@ private:
         CHOOSER = 2
     };
 
-    Quadrant m_quadHit;
+    UpDown m_quadHit;
     HitPosition m_hitMode;
 
     QColor m_Color;
@@ -56,9 +55,10 @@ private:
 
     nkn::NknVector3 m_mouseVec;
 
-    QPoint m_arrow[3];
+    QPointF m_arrow[3];
     QPointF m_worldCenter;
     QPointF m_indicatorPosition;
+    const QPointF m_pointZero{0,0};
 
     QRectF m_chooserSize;
 
