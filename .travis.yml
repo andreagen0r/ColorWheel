@@ -23,12 +23,12 @@ before_install:
     sudo add-apt-repository --yes ppa:beineri/opt-qt-5.11.1-trusty;
     sudo apt update -qq;
     sudo apt install build-essential qt511-meta-minimal/trusty qt511base qt511tools && export CMAKE_PREFIX_PATH=/opt/qt511;
-  fi
+    fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-      brew update;
-      brew outdated cmake || brew upgrade cmake;
-      brew install qt5;
-      export CMAKE_PREFIX_PATH=$(brew --prefix qt5);
+    brew update;
+    brew outdated cmake || brew upgrade cmake;
+    brew install qt5;
+    export CMAKE_PREFIX_PATH=$(brew --prefix qt5);
     fi
 
 before_script:
