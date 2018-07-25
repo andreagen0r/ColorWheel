@@ -45,6 +45,7 @@ bin/
 deps/
 objs/
 documentation/
+build/
 
 # Packages #
 ############
