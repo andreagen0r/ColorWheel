@@ -14,7 +14,7 @@ ColorWheel::ColorWheel(QWidget *parent)
 {
 }
 
-ColorWheel::ColorWheel(const QColor in_Color, QWidget *parent)
+ColorWheel::ColorWheel(const QColor &in_Color, QWidget *parent)
     : QWidget(parent),
       m_hitMode(HitPosition::IDLE),
       m_Color(in_Color)
@@ -35,11 +35,6 @@ ColorWheel::ColorWheel(const QColor in_Color, QWidget *parent)
     // Sampler gradient
     m_valueGradient.setColorAt(0.0, Qt::transparent);
     m_valueGradient.setColorAt(1.0, Qt::black);
-}
-
-ColorWheel::~ColorWheel()
-{
-
 }
 
 QColor ColorWheel::getColor() const
@@ -69,7 +64,7 @@ void ColorWheel::setColor(const QColor &in_Color)
 }
 
 bool ColorWheel::isHitMode()
-{    
+{
     if(m_mouseVec.length() > m_innerRadius && m_mouseVec.length() < m_outerRadius)
     {
         m_hitMode = HitPosition::WHEEL;
@@ -107,7 +102,7 @@ auto ColorWheel::getQuadrant()
             return Quadrant::RIGHT_UP;
         }
         else
-        {            
+        {
             return Quadrant::RIGHT_DOWN;
         }
     }
@@ -116,7 +111,7 @@ auto ColorWheel::getQuadrant()
 QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
 {
     double x = in_mouseVec.x;
-    double y = -in_mouseVec.y;;
+    double y = -in_mouseVec.y;
 
     if(!m_chooserSize.contains(in_mouseVec.x, in_mouseVec.y))
     {
@@ -151,8 +146,8 @@ QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
 
 QPointF ColorWheel::saturationValueFromColor(const QColor &in_color)
 {
-    return QPointF(m_chooserSize.width() * (in_color.saturationF() - 0.5),
-                   -m_chooserSize.height() * (in_color.valueF() - 0.5));
+    return QPointF{m_chooserSize.width() * (in_color.saturationF() - 0.5),
+                   -m_chooserSize.height() * (in_color.valueF() - 0.5)};
 }
 
 QColor ColorWheel::hueAt(const nkn::NknVector3 &in_mouseVec)
@@ -174,7 +169,7 @@ QColor ColorWheel::hueAt(const nkn::NknVector3 &in_mouseVec)
 }
 
 void ColorWheel::drawWheel()
-{    
+{
     m_wheelPixmap = QPixmap(m_width, m_height);
     m_wheelPixmap.fill(QColor(0,0,0,0));
 
@@ -196,7 +191,7 @@ void ColorWheel::drawWheel()
 }
 
 void ColorWheel::drawColorSelected()
-{    
+{
     m_chooserPixmap = QPixmap(m_chooserSize.width(), m_chooserSize.height());
     m_chooserPixmap.fill(QColor(0,0,0,0));
 
@@ -214,7 +209,7 @@ void ColorWheel::drawColorSelected()
 }
 
 void ColorWheel::drawIndicators(QPainter *painter)
-{    
+{
     painter->setRenderHints(QPainter::Antialiasing, true);
     painter->translate(m_worldCenter.x(), m_worldCenter.y());
 
@@ -247,7 +242,7 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 }
 
 void ColorWheel::mousePressEvent(QMouseEvent *event)
-{    
+{
     if(event->buttons() != Qt::LeftButton)
     {
         return;

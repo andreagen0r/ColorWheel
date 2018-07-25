@@ -10,8 +10,7 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
-    ~ColorWheel();
+    explicit ColorWheel(const QColor &in_Color, QWidget *parent = 0);
 
     QColor getColor() const;
 

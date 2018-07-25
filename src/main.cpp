@@ -11,5 +11,5 @@ int main(int argc, char *argv[])
     w.show();
 //    w.setColor(Qt::green);
 
-    return a.exec();
+    return QApplication::exec();
 }

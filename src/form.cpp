@@ -6,6 +6,7 @@ Form::Form(QWidget *parent) :
     ui(new Ui::Form)
 {
     ui->setupUi(this);
+    setWindowTitle("Color Wheel");
 
     connect(ui->widget, &ColorWheel::colorChanged, this, &Form::cor);
     ui->widget->setColor(QColor(190, 108, 228));
