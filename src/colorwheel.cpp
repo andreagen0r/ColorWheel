@@ -14,7 +14,7 @@ ColorWheel::ColorWheel(QWidget *parent)
 {
 }
 
-ColorWheel::ColorWheel(const QColor in_Color, QWidget *parent)
+ColorWheel::ColorWheel(const QColor &in_Color, QWidget *parent)
     : QWidget(parent),
       m_quadHit(UpDown::UP),
       m_hitMode(HitPosition::IDLE),
@@ -81,7 +81,7 @@ bool ColorWheel::isHitMode()
         return true;
     }
 
-    if(m_chooserSize.contains(m_mouseVec.x, m_mouseVec.y))
+    if(m_chooserSize.contains(static_cast<double>(m_mouseVec.x()), static_cast<double>(m_mouseVec.y())))
     {
         m_hitMode = HitPosition::CHOOSER;
         return true;
@@ -106,29 +106,29 @@ ColorWheel::UpDown ColorWheel::getQuadrant(const QPoint &position)
     return output;
 }
 
-QColor ColorWheel::saturationValueAt(const nkn::NknVector3 &in_mouseVec)
+QColor ColorWheel::saturationValueAt(const QVector2D &in_mouseVec)
 {
-    double x{static_cast<double>(in_mouseVec.x)};
-    double y{static_cast<double>(-in_mouseVec.y)};
+    double x{static_cast<double>(in_mouseVec.x())};
+    double y{static_cast<double>(-in_mouseVec.y())};
 
-    if(!m_chooserSize.contains(in_mouseVec.x, in_mouseVec.y))
+    if(!m_chooserSize.contains(in_mouseVec.x(), in_mouseVec.y()))
     {
         // Test Saturation X axis
-        if(in_mouseVec.x <= m_chooserSize.left())
+        if(in_mouseVec.x() <= m_chooserSize.left())
         {
             x = m_chooserSize.left();
         }
-        else if (in_mouseVec.x >= m_chooserSize.right())
+        else if (in_mouseVec.x() >= m_chooserSize.right())
         {
             x = m_chooserSize.right();
         }
 
         // Test Value Y axis
-        if(in_mouseVec.y <= m_chooserSize.top())
+        if(in_mouseVec.y() <= m_chooserSize.top())
         {
             y = -m_chooserSize.top();
         }
-        else if (in_mouseVec.y >= m_chooserSize.bottom())
+        else if (in_mouseVec.y() >= m_chooserSize.bottom())
         {
             y = -m_chooserSize.bottom();
         }
@@ -148,10 +148,12 @@ QPointF ColorWheel::saturationValueFromColor(const QColor &in_color)
                    -m_chooserSize.height() * (in_color.valueF() - 0.5)};
 }
 
-QColor ColorWheel::hueAt(const nkn::NknVector3 &in_mouseVec)
+QColor ColorWheel::hueAt(const QVector2D &in_mouseVec)
 {
-    nkn::NknVector3 vec(1.0, 0.0, 0.0);
-    double angle = nkn::math::radiansToDegrees(std::acos(in_mouseVec.dot(vec) / (in_mouseVec.length() * vec.length())));
+    QVector2D vec{1.0, 0.0};
+    double angle = nkn::math::radiansToDegrees(
+                std::acos(in_mouseVec.dotProduct(vec, in_mouseVec) / (in_mouseVec.length() * vec.length()))
+                );
 
     m_quadHit = getQuadrant(mapFromGlobal(QCursor::pos()));
 
@@ -234,8 +236,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.drawPixmap(static_cast<int>(m_width/2 - (m_chooserSize.width()/2)),
-                       static_cast<int>(m_height/2 - (m_chooserSize.height()/2)),
+    painter.drawPixmap(m_width / 2 - (m_chooserSize.width() / 2),
+                       m_height / 2 - (m_chooserSize.height() / 2),
                        m_chooserPixmap);
 
     painter.drawPixmap(m_pointZero, m_wheelPixmap);
@@ -249,8 +251,8 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    m_mouseVec.x = event->x() - m_width / 2;
-    m_mouseVec.y = event->y() - m_height / 2;
+    m_mouseVec.setX(event->x() - static_cast<float>(m_width) / 2);
+    m_mouseVec.setY(event->y() - static_cast<float>(m_height) / 2);
 
     if(!isHitMode())
     {
@@ -294,8 +296,8 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    m_mouseVec.x = event->x() - m_width / 2;
-    m_mouseVec.y = event->y() - m_height / 2;
+    m_mouseVec.setX(event->x() - static_cast<float>(m_width) / 2);
+    m_mouseVec.setY(event->y() - static_cast<float>(m_height) / 2);
 
     switch (m_hitMode)
     {

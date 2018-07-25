@@ -2,7 +2,7 @@
 #define COLORWHEEL_H
 
 #include <QWidget>
-#include "nkVector3.h"
+#include <QVector2D>
 
 class ColorWheel : public QWidget
 {
@@ -10,7 +10,7 @@ class ColorWheel : public QWidget
 
 public:
     explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(const QColor in_Color, QWidget *parent = 0);
+    explicit ColorWheel(const QColor &in_Color, QWidget *parent = 0);
 
     QColor getColor() const;
 
@@ -23,9 +23,9 @@ signals:
 private:
     bool isHitMode();
 
-    QColor saturationValueAt(const nkn::NknVector3 &in_mouseVec);
+    QColor saturationValueAt(const QVector2D &in_mouseVec);
     QPointF saturationValueFromColor(const QColor &in_color);
-    QColor hueAt(const nkn::NknVector3 &in_mouseVec);
+    QColor hueAt(const QVector2D &in_mouseVec);
 
     void drawWheel();
     void drawColorSelected();
@@ -53,7 +53,8 @@ private:
     QLinearGradient m_saturationGradient;
     QLinearGradient m_valueGradient;
 
-    nkn::NknVector3 m_mouseVec;
+//    nkn::NknVector3 m_mouseVec;
+    QVector2D m_mouseVec;
 
     QPointF m_arrow[3];
     QPointF m_worldCenter;
