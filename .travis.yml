@@ -6,30 +6,24 @@ branches:
   only:
     - master
 
-osx_image: xcode8
+osx_image: xcode9.2
 os:
   - linux
   - osx
 
 env:
   - CONFIG=Release
-  - CONFIG=Debug
 
 compiler:
   - clang
   - gcc
 
 before_install:
-  - QT_VERSION_MM=57
-  - QT_VERSION_FULL=571-trusty
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-    sudo add-apt-repository ppa:beineri/opt-qt$QT_VERSION_FULL -y
-      && sudo apt-get update -qq
-      && sudo apt-get install -y
-
-      qt${QT_VERSION_MM}base qt${QT_VERSION_MM}tools
-      && export CMAKE_PREFIX_PATH=/opt/qt${QT_VERSION_MM};
-    fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+    sudo add-apt-repository --yes ppa:beineri/opt-qt-5.11.1-trusty;
+    sudo apt update -qq;
+    sudo apt install build-essential qt511-meta-minimal/trusty qt511base qt511tools && export CMAKE_PREFIX_PATH=/opt/qt511;
+  fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
       brew update;
       brew outdated cmake || brew upgrade cmake;
@@ -37,13 +31,10 @@ before_install:
       export CMAKE_PREFIX_PATH=$(brew --prefix qt5);
     fi
 
-
-
 before_script:
    - mkdir build
    - cd build
    - cmake ../src/
-
 
 script:
    - cmake --build . --config $CONFIG &&
