@@ -4,7 +4,7 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: trusty
       sudo: require
       addons:
         apt:
@@ -28,11 +28,11 @@ before_install:
 
 install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      export QTV=qt511;
-      sudo add-apt-repository --yes ppa:beineri/opt-qt-5.11.1-xenial;
+      export QTV=qt510;
+      sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
       sudo apt update -qq;
       sudo apt search ${QTV};
-      sudo apt install build-essential ${QTV}-meta-minimal/xenial ${QTV}quickcontrols/xenial ${QTV}quickcontrols2/xenial ${QTV}graphicaleffects/xenial ${QTV}svg/xenial ${QTV}scxml/xenial git;
+      sudo apt install build-essential ${QTV}-meta-minimal/trusty ${QTV}quickcontrols/trusty ${QTV}quickcontrols2/trusty ${QTV}graphicaleffects/trusty ${QTV}svg/trusty ${QTV}scxml/trusty git;
       fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       brew update > /dev/null;
