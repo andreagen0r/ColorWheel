@@ -4,14 +4,16 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: require
       addons:
         apt:
           sources:
-             - sourceline: 'ppa:ubuntu-toolchain-r/test'
+            - ubuntu-toolchain-r-test
           packages:
             - g++-7
+            - gcc-7
+            - cmake
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -25,13 +27,12 @@ before_install:
   - eval "${MATRIX_EVAL}"
 
 install:
-  - QT_VERSION=qt511
-  - QT_VERSION_FULL=qt-5.11.1
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo add-apt-repository --yes ppa:beineri/opt-${QT_VERSION_FULL}-trusty;
+      export QTV=qt511;
+      sudo add-apt-repository --yes ppa:beineri/opt-qt-5.11.1-xenial;
       sudo apt update -qq;
-      sudo apt search ${QT_VERSION};
-      sudo apt install build-essential ${QT_VERSION}-meta-minimal/trusty ${QT_VERSION}quickcontrols/trusty ${QT_VERSION}quickcontrols2/trusty ${QT_VERSION}graphicaleffects/trusty ${QT_VERSION}svg/trusty ${QT_VERSION}scxml/trusty git;
+      sudo apt search ${QTV};
+      sudo apt install build-essential ${QTV}-meta-minimal/xenial ${QTV}quickcontrols/xenial ${QTV}quickcontrols2/xenial ${QTV}graphicaleffects/xenial ${QTV}svg/xenial ${QTV}scxml/xenial git;
       fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       brew update > /dev/null;
