@@ -24,39 +24,39 @@ matrix:
         - MATRIX_EVAL="COMPILER=clang++"
 
 before_install:
-- eval "${MATRIX_EVAL}"
+  - eval "${MATRIX_EVAL}"
 
 install:
-- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-    sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
-    sudo apt update -qq;
-    sudo apt search qt510;
-    sudo apt install build-essential qt510-meta-minimal/trusty qt510quickcontrols/trusty qt510quickcontrols2/trusty qt510graphicaleffects/trusty qt510svg/trusty qt510scxml/trusty git;
-    fi
-- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-    brew update > /dev/null;
-    brew install qt5;
-    chmod -R 755 /usr/local/opt/qt5/*;
-    export QTDIR="/usr/local/opt/qt5";
-    export PATH="$QTDIR/bin:$PATH";
-    fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
+      sudo apt update -qq;
+      sudo apt search qt510;
+      sudo apt install build-essential qt510-meta-minimal/trusty qt510quickcontrols/trusty qt510quickcontrols2/trusty qt510graphicaleffects/trusty qt510svg/trusty qt510scxml/trusty git;
+      fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      brew update > /dev/null;
+      brew install qt5;
+      chmod -R 755 /usr/local/opt/qt5/*;
+      export QTDIR="/usr/local/opt/qt5";
+      export PATH="$QTDIR/bin:$PATH";
+      fi
 
 script:
-- if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-    # sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc;
-    # sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++;
-    # export CC=/usr/bin/gcc-7;
-    # export CXX=/usr/bin/g++-7;
-    # gcc -v && g++ -v && cmake --version;
-    source /opt/qt*/bin/qt*-env.sh;
-    mkdir build;
-    cd build;
-    cmake ../src/;
-    make;
-    fi
-- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
-    mkdir build;
-    cd build;
-    cmake ../src/;
-    make;
-    fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
+      # sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc;
+      # sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++;
+      # export CC=/usr/bin/gcc-7;
+      # export CXX=/usr/bin/g++-7;
+      # gcc -v && g++ -v && cmake --version;
+      source /opt/qt*/bin/qt*-env.sh;
+      mkdir build;
+      cd build;
+      cmake ../src/;
+      make;
+      fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
+      mkdir build;
+      cd build;
+      cmake ../src/;
+      make;
+      fi
