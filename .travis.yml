@@ -4,16 +4,14 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: require
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
+             - sourceline: 'ppa:ubuntu-toolchain-r/test'
           packages:
             - g++-7
-            - gcc-7
-            - cmake
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
