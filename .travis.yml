@@ -22,7 +22,6 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
     sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
     sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    sudo apt-get update -qq
     sudo apt update -qq;
     sudo apt install build-essential qt510-meta-minimal/trusty qt510base qt510tools && export CMAKE_PREFIX_PATH=/opt/qt510;
     fi
