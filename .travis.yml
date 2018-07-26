@@ -12,6 +12,8 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
+            - gcc-7
+            - cmake
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -37,6 +39,11 @@ install:
     fi
 
 script:
+- sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc
+- sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++
+- export CC=/usr/bin/gcc-7
+- export CXX=/usr/bin/g++-7
+- gcc -v && g++ -v && cmake --version
 - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
     source /opt/qt*/bin/qt*-env.sh;
     mkdir build;
