@@ -23,10 +23,9 @@ before_install:
     sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
     sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test;
     sudo apt update -qq;
-    sudo apt install build-essential qt510-meta-minimal/trusty qt510base qt510tools && export CMAKE_PREFIX_PATH=/opt/qt510;
-    sudo apt-get update;
-    sudo apt-get install gcc-5 g++-5;
+    sudo apt install gcc-5 g++-5;
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1;
+    sudo apt install build-essential qt510-meta-minimal/trusty qt510base qt510tools && export CMAKE_PREFIX_PATH=/opt/qt510;
     fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then
     brew update;
