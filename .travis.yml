@@ -23,6 +23,9 @@ matrix:
       env:
         - MATRIX_EVAL="COMPILER=clang++"
 
+before_install:
+- eval "${MATRIX_EVAL}"
+
 install:
 - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
     sudo add-apt-repository --yes ppa:beineri/opt-qt-5.10.1-trusty;
@@ -40,11 +43,11 @@ install:
 
 script:
 - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-    sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc;
-    sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++;
-    export CC=/usr/bin/gcc-7;
-    export CXX=/usr/bin/g++-7;
-    gcc -v && g++ -v && cmake --version;
+    # sudo ln -s /usr/bin/gcc-7 /usr/local/bin/gcc;
+    # sudo ln -s /usr/bin/g++-7 /usr/local/bin/g++;
+    # export CC=/usr/bin/gcc-7;
+    # export CXX=/usr/bin/g++-7;
+    # gcc -v && g++ -v && cmake --version;
     source /opt/qt*/bin/qt*-env.sh;
     mkdir build;
     cd build;
