@@ -4,7 +4,7 @@ language: cpp
 matrix:
   include:
     - os: linux
-      dist: xenial
+      dist: trusty
       sudo: require
       addons:
         apt:
@@ -28,10 +28,10 @@ install:
   - QT_VERSION=qt511
   - QT_VERSION_FULL=qt-5.11.1
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-      sudo add-apt-repository --yes ppa:beineri/opt-${QT_VERSION_FULL}-xenial;
+      sudo add-apt-repository --yes ppa:beineri/opt-${QT_VERSION_FULL}-trusty;
       sudo apt update -qq;
       sudo apt search ${QT_VERSION};
-      sudo apt install build-essential ${QT_VERSION}-meta-minimal/xenial ${QT_VERSION}quickcontrols/xenial ${QT_VERSION}quickcontrols2/xenial ${QT_VERSION}graphicaleffects/xenial ${QT_VERSION}svg/xenial ${QT_VERSION}scxml/xenial git;
+      sudo apt install build-essential ${QT_VERSION}-meta-minimal/trusty ${QT_VERSION}quickcontrols/trusty ${QT_VERSION}quickcontrols2/trusty ${QT_VERSION}graphicaleffects/trusty ${QT_VERSION}svg/trusty ${QT_VERSION}scxml/trusty git;
       fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then
       brew update > /dev/null;
