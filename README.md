@@ -1,5 +1,5 @@
 # ColorWheel
-Simple Color Wheel
+A simple C++ and Qt Color Wheel.
 
 [![Build Status](https://travis-ci.org/andreagen0r/ColorWheel.svg?branch=master)](https://travis-ci.org/andreagen0r/ColorWheel)
 
