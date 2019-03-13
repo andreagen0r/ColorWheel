@@ -218,8 +218,10 @@ void ColorWheel::drawIndicators(QPainter *painter)
     painter->rotate(-m_Color.hsvHue());
 
     // Draw wheel indicator
+    painter->setPen(QPen(Qt::NoPen));
     painter->setBrush(Qt::black);
     painter->drawConvexPolygon(m_arrow, 3);
+    painter->setPen(QPen(Qt::black, 1));
     painter->drawLine(QPointF(m_innerRadius + 1.0, 0), QPointF(m_outerRadius, 0));
     painter->restore();
 
