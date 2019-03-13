@@ -1,24 +1,26 @@
 #include "colorwheel.h"
 #include "nkMath.h"
 
+#include <utility>
+#include <cmath>
+
 #include <QColor>
 #include <QGradient>
 #include <QPixmap>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPainterPath>
-#include <cmath>
 
 ColorWheel::ColorWheel(QWidget *parent)
     : ColorWheel(Qt::red, parent)
 {
 }
 
-ColorWheel::ColorWheel(const QColor &in_Color, QWidget *parent)
+ColorWheel::ColorWheel(QColor in_Color, QWidget *parent)
     : QWidget(parent),
       m_quadHit(UpDown::UP),
       m_hitMode(HitPosition::IDLE),
-      m_Color(in_Color),
+      m_Color(std::move(in_Color)),
       m_innerRadius(0),
       m_outerRadius(0),
       m_indicatorSize(0),
@@ -44,6 +46,9 @@ ColorWheel::ColorWheel(const QColor &in_Color, QWidget *parent)
     // Sampler gradient
     m_valueGradient.setColorAt(0.0, Qt::transparent);
     m_valueGradient.setColorAt(1.0, Qt::black);
+
+    // Add points to Polygon
+    m_arrow << QPointF(0, 0) << QPointF(0, 0) << QPointF(0, 0);
 }
 
 QColor ColorWheel::getColor() const
@@ -152,7 +157,7 @@ QColor ColorWheel::hueAt(const QVector2D &in_mouseVec)
 {
     QVector2D vec{1.0, 0.0};
     float angle = nkn::math::radiansToDegrees(
-                std::acos(in_mouseVec.dotProduct(vec, in_mouseVec) / (in_mouseVec.length() * vec.length()))
+                std::acos(QVector2D::dotProduct(vec, in_mouseVec) / (in_mouseVec.length() * vec.length()))
                 );
 
     m_quadHit = getQuadrant(mapFromGlobal(QCursor::pos()));
@@ -220,7 +225,7 @@ void ColorWheel::drawIndicators(QPainter *painter)
     // Draw wheel indicator
     painter->setPen(QPen(Qt::NoPen));
     painter->setBrush(Qt::black);
-    painter->drawConvexPolygon(m_arrow, 3);
+    painter->drawConvexPolygon(m_arrow);
     painter->setPen(QPen(Qt::black, 1));
     painter->drawLine(QPointF(m_innerRadius + 1.0, 0), QPointF(m_outerRadius, 0));
     painter->restore();
@@ -335,9 +340,10 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     m_innerRadius = side - (side * 0.25);
 
     // Make the arrow points relative to widget size
-   m_arrow [0] = QPointF(m_innerRadius, 3 * (side * 0.01));
-   m_arrow [1] = QPointF(m_innerRadius + 6 * (side * 0.01), 0);
-   m_arrow [2] = QPointF(m_innerRadius, -3 * (side * 0.01));
+   m_arrow[0] = QPointF(m_innerRadius, 3 * (side * 0.01));
+   m_arrow[1] = QPointF(m_innerRadius + 6 * (side * 0.01), 0);
+   m_arrow[2] = QPointF(m_innerRadius, -3 * (side * 0.01));
+
 
    // Calculate the size for sampler color
    double diagonal = std::cos(nkn::math::degreeToRadians(45.0)) * m_innerRadius;

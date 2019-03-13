@@ -9,8 +9,8 @@ class ColorWheel : public QWidget
     Q_OBJECT
 
 public:
-    explicit ColorWheel(QWidget *parent = 0);
-    explicit ColorWheel(const QColor &in_Color, QWidget *parent = 0);
+    explicit ColorWheel(QWidget *parent = nullptr);
+    explicit ColorWheel(QColor in_Color, QWidget *parent = nullptr);
 
     QColor getColor() const;
 
@@ -56,7 +56,7 @@ private:
 //    nkn::NknVector3 m_mouseVec;
     QVector2D m_mouseVec;
 
-    QPointF m_arrow[3];
+    QPolygonF m_arrow;
     QPointF m_worldCenter;
     QPointF m_indicatorPosition;
     const QPointF m_pointZero{0,0};
