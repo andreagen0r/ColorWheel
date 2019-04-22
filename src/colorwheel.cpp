@@ -247,14 +247,17 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    switch (m_hitMode)
-    case HitPosition::WHEEL: {
+    switch (m_hitMode) {
+    case HitPosition::WHEEL:
         setColor(hueAt(m_mouseVec));
         break;
 
     case HitPosition::CHOOSER:
         setColor(saturationValuePositionLimit(m_mouseVec));
         setCursor(Qt::BlankCursor);
+        break;
+
+    default:
         break;
     }
 }
@@ -286,6 +289,9 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 
     case HitPosition::CHOOSER:
         setColor(saturationValuePositionLimit(m_mouseVec));
+        break;
+
+    default:
         break;
     }
 }

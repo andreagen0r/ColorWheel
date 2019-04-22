@@ -13,12 +13,8 @@ set( CMAKE_CXX_STANDARD 14)
 set( CMAKE_CXX_STANDARD_REQUIRED ON)
 set( CMAKE_CXX_EXTENSIONS ON)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message("Release Mode")
-    set( CMAKE_CXX_FLAGS "-O3")
-    set( CMAKE_CXX_FLAGS "-Ofast")
-    set( CMAKE_CXX_FLAGS "-march=native")
-endif()
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra -O3 -Ofast -march=native")
 
 set( CMAKE_CXX_FLAGS "-msse -msse2 -mssse3 -msse4.1 -msse4.2")
 
