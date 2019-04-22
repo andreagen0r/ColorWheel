@@ -1,11 +1,8 @@
 #include "colorwheel.h"
 #include "nkMath.h"
 
-#include <utility>
 #include <cmath>
 
-#include <QColor>
-#include <QGradient>
 #include <QPixmap>
 #include <QPainter>
 #include <QMouseEvent>
@@ -99,41 +96,34 @@ ColorWheel::UpDown ColorWheel::getQuadrant(const QPoint &position)
 {
     UpDown output;
 
-    if(position.y() <= static_cast<int>(m_height/2))
-    {
-        output = UpDown::UP;
-    }
-    else
-    {
-        output = UpDown::DOWN;
-    }
+    (position.y() <= static_cast<int>(m_height/2)) ? output = UpDown::UP : output = UpDown::DOWN;
 
     return output;
 }
 
-QColor ColorWheel::saturationValueAt(const QVector2D &in_mouseVec)
+QColor ColorWheel::saturationValuePositionLimit(const QVector2D &in_mouseVec)
 {
     double x{static_cast<double>(in_mouseVec.x())};
     double y{static_cast<double>(-in_mouseVec.y())};
 
-    if(!m_chooserSize.contains(static_cast<double>(in_mouseVec.x()), static_cast<double>(in_mouseVec.y())))
+    if(m_hitMode == HitPosition::CHOOSER)
     {
         // Test Saturation X axis
-        if(static_cast<double>(in_mouseVec.x()) <= m_chooserSize.left())
+        if(x <= m_chooserSize.left())
         {
             x = m_chooserSize.left();
         }
-        else if (static_cast<double>(in_mouseVec.x()) >= m_chooserSize.right())
+        else if (x >= m_chooserSize.right())
         {
             x = m_chooserSize.right();
         }
 
         // Test Value Y axis
-        if(static_cast<double>(in_mouseVec.y()) <= m_chooserSize.top())
+        if(-y <= m_chooserSize.top())
         {
             y = -m_chooserSize.top();
         }
-        else if (static_cast<double>(in_mouseVec.y()) >= m_chooserSize.bottom())
+        else if (-y >= m_chooserSize.bottom())
         {
             y = -m_chooserSize.bottom();
         }
@@ -176,7 +166,7 @@ QColor ColorWheel::hueAt(const QVector2D &in_mouseVec)
 void ColorWheel::drawWheel()
 {
     m_wheelPixmap = QPixmap(m_width, m_height);
-    m_wheelPixmap.fill(QColor(0,0,0,0));
+    m_wheelPixmap.fill(Qt::transparent);
 
     QPainterPath path;
     QPainter painter(&m_wheelPixmap);
@@ -243,8 +233,8 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    double pMapX{static_cast<double>(m_width) / 2 - (m_chooserSize.width() / 2)};
-    double pMapY{static_cast<double>(m_height) / 2 - (m_chooserSize.height() / 2)};
+    double pMapX{static_cast<double>(m_width - m_chooserSize.width()) / 2 };
+    double pMapY{static_cast<double>(m_height - m_chooserSize.height()) / 2};
 
     painter.drawPixmap(static_cast<int>(pMapX), static_cast<int>(pMapY),m_chooserPixmap);
 
@@ -276,7 +266,7 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
         }
         case HitPosition::CHOOSER:
         {
-            setColor(saturationValueAt(m_mouseVec));
+            setColor(saturationValuePositionLimit(m_mouseVec));
             setCursor(Qt::BlankCursor);
             break;
         }
@@ -316,7 +306,7 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
         }
         case HitPosition::CHOOSER:
         {
-            setColor(saturationValueAt(m_mouseVec));
+            setColor(saturationValuePositionLimit(m_mouseVec));
             break;
         }
         default:
@@ -335,7 +325,7 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     m_worldCenter.setX(static_cast<int>(m_width / 2));
     m_worldCenter.setY(static_cast<int>(m_height / 2));
 
-    double side = std::fmin(width(), height()) / 2;
+    double side = std::fmin(m_width, m_height) / 2;
     m_outerRadius = side - 1.0;
     m_innerRadius = side - (side * 0.25);
 
@@ -344,11 +334,6 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
    m_arrow[1] = QPointF(m_innerRadius + 6 * (side * 0.01), 0);
    m_arrow[2] = QPointF(m_innerRadius, -3 * (side * 0.01));
 
-
-   // Calculate the size for sampler color
-   double diagonal = std::cos(nkn::math::degreeToRadians(45.0)) * m_innerRadius;
-   double gap = (diagonal * 0.05);
-
    // Calculate chooser indicator size
    m_indicatorSize = m_innerRadius * 0.04;
    if(m_indicatorSize < 1.0)
@@ -356,15 +341,22 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
        m_indicatorSize = 1.0;
    }
 
+   // Calculate the size for sampler color
+   double diagonal = std::cos(nkn::math::degreeToRadians(45.0)) * m_innerRadius;
+   double gap = (diagonal * 0.05);
+
+   double diagonalMin = -diagonal + gap;
+   double diagonalMax = diagonal - gap;
+
    // Setup the rect size for color sampler
-   m_chooserSize.setTopLeft(QPointF( -diagonal + gap, -diagonal + gap));
-   m_chooserSize.setBottomRight(QPointF( diagonal - gap, diagonal - gap));
+   m_chooserSize.setTopLeft(QPointF( diagonalMin, diagonalMin));
+   m_chooserSize.setBottomRight(QPointF( diagonalMax, diagonalMax));
 
    m_saturationGradient.setStart(m_pointZero);
    m_saturationGradient.setFinalStop(QPointF(m_chooserSize.width(), 0));
 
-   m_valueGradient.setStart(QPointF(0, -diagonal + gap));
-   m_valueGradient.setFinalStop(QPointF(0, diagonal - gap));
+   m_valueGradient.setStart(QPointF(0, diagonalMin));
+   m_valueGradient.setFinalStop(QPointF(0, diagonalMax));
 
    drawWheel();
    saturationValueFromColor(m_Color);

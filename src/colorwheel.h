@@ -23,7 +23,7 @@ signals:
 private:
     bool isHitMode();
 
-    QColor saturationValueAt(const QVector2D &in_mouseVec);
+    QColor saturationValuePositionLimit(const QVector2D &in_mouseVec);
     QPointF saturationValueFromColor(const QColor &in_color);
     QColor hueAt(const QVector2D &in_mouseVec);
 
