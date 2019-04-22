@@ -13,10 +13,15 @@ set( CMAKE_CXX_STANDARD 14)
 set( CMAKE_CXX_STANDARD_REQUIRED ON)
 set( CMAKE_CXX_EXTENSIONS ON)
 
-set( CMAKE_CXX_FLAGS "-O3")
-set( CMAKE_CXX_FLAGS "-Ofast")
-set( CMAKE_CXX_FLAGS "-march=native")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message("Release Mode")
+    set( CMAKE_CXX_FLAGS "-O3")
+    set( CMAKE_CXX_FLAGS "-Ofast")
+    set( CMAKE_CXX_FLAGS "-march=native")
+endif()
+
 set( CMAKE_CXX_FLAGS "-msse -msse2 -mssse3 -msse4.1 -msse4.2")
+
 
 find_package(
     Qt5
